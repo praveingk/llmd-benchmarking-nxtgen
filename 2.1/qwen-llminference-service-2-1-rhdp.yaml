@@ -3,7 +3,7 @@ apiVersion: serving.kserve.io/v1alpha1
 kind: LLMInferenceService
 metadata:
   name: qwen2-7b-kv-cache-routing
-  namespace: vinod
+  namespace: redhat-ods-applications
   annotations:
     opendatahub.io/model-type: generative
     openshift.io/display-name: qwen2-7b-kv-cache-routing
@@ -11,17 +11,15 @@ metadata:
 spec:
   # Four replicas to demonstrate KV cache routing across instances
   replicas: 4
-  labels:
-    llm-pool: qwen2-7b-kv-cache-routing
   model:
-    uri: hf://Qwen/Qwen2.5-7B-Instruct
-    name: Qwen/Qwen2.5-7B-Instruct
+    uri: hf://TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    name: TinyLlama/TinyLlama-1.1B-Chat-v1.0
   router:
     scheduler:
       pool:
         spec:
           selector:
-            llm-pool: qwen2-7b-kv-cache-routing
+            app.kubernetes.io/name: qwen2-7b-kv-cache-routing
             kserve.io/component: workload
           targetPortNumber: 8000
           extensionRef:
@@ -89,7 +87,10 @@ spec:
           - name: cachi2-cache
             emptyDir: {}
     route: { }
-    gateway: { }
+    gateway:
+      refs:
+      - name: data-science-gateway
+        namespace: openshift-ingress
   template:
     containers:
       - name: main
@@ -101,7 +102,7 @@ spec:
                 apiVersion: v1
                 fieldPath: status.podIP
           - name: MODEL_NAME
-            value: Qwen/Qwen2.5-7B-Instruct
+            value: TinyLlama/TinyLlama-1.1B-Chat-v1.0
           # Hash seed must match scheduler configuration
           - name: PYTHONHASHSEED
             value: "42"
