@@ -27,16 +27,17 @@ spec:
           value: "false"
         - name: GUIDELLM_TARGET
           value: http://benchmark-gateway-data-science-gateway-class.redhat-ods-applications.svc.cluster.local/redhat-ods-applications/qwen2-7b-kv-cache-routing
+          #value: https://qwen2-7b-kv-cache-routing-kserve-workload-svc.redhat-ods-applications.svc.cluster.local:8000
         - name: GUIDELLM_MODEL
           value: TinyLlama/TinyLlama-1.1B-Chat-v1.0
         - name: GUIDELLM_PROCESSOR
           value: TinyLlama/TinyLlama-1.1B-Chat-v1.0
         - name: GUIDELLM_RATE
-          value: "100,200,300,400,500" #,600,700,800,900,1000"
-        - name: GUIDELLM_MAX_REQUESTS
-          value: "500"
+          value: "50,100,150,200,250" #,500,750,1000"
+        #- name: GUIDELLM_MAX_REQUESTS
+        #  value: "100"
         - name: GUIDELLM_MAX_SECONDS
-          value: "300"
+          value: "30"
         - name: GUIDELLM_DATASET
           value: Open-Orca/OpenOrca
         - name: GUIDELLM_DATASET_SPLIT
@@ -146,7 +147,6 @@ spec:
               --profile "concurrent" \
               --rate "${GUIDELLM_RATE}" \
               --max-seconds "${GUIDELLM_MAX_SECONDS}" \
-              --max-requests "${GUIDELLM_MAX_REQUESTS}" \
               --max-errors "200" \
               --data "/tmp/openorca-prompts.jsonl" \
               --data-samples "${GUIDELLM_DATA_SAMPLES}" \

@@ -71,10 +71,11 @@ spec:
             - name: default
               plugins:
               - pluginRef: queue-scorer
-                weight: 2
+                weight: 1
               - pluginRef: kv-cache-utilization-scorer
-                weight: 2
+                weight: 1
               - pluginRef: precise-prefix-cache-scorer
+                #weight: 1
                 weight: 3
           volumeMounts:
           - name: tokenizer-cache
