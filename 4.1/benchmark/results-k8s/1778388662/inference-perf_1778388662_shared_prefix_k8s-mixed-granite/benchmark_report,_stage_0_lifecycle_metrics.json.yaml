@@ -1,0 +1,227 @@
+metrics:
+  latency:
+    inter_token_latency:
+      max: 40.90872430615127
+      mean: 0.0645856392367123
+      min: 5.442183464765549e-06
+      p0p1: 6.54393807053566e-06
+      p1: 0.0075128329358994965
+      p10: 0.031908940989524126
+      p25: 0.039500453625805676
+      p5: 0.027164965262636544
+      p50: 0.04412760119885206
+      p75: 0.06458448129706085
+      p90: 0.06904189637862146
+      p95: 0.07483397175092248
+      p99: 0.46096167514566333
+      p99p9: 0.5176175824139819
+      units: s/token
+    normalized_time_per_output_token:
+      max: 0.12238664697878153
+      mean: 0.07462310546425904
+      min: 0.006515729957592596
+      p0p1: 0.0074203432684805766
+      p1: 0.040524316830678836
+      p10: 0.05536303664017985
+      p25: 0.06087657883865185
+      p5: 0.052694338363271545
+      p50: 0.07343844392396744
+      p75: 0.08713220766655963
+      p90: 0.09658248035981035
+      p95: 0.10042798891791804
+      p99: 0.11894871018054425
+      p99p9: 0.12183249109713143
+      units: s/token
+    request_latency:
+      max: 121.8971003908664
+      mean: 74.90176157813643
+      min: 37.95614938810468
+      p0p1: 38.497991091164764
+      p1: 44.81996070516762
+      p10: 55.49535143570974
+      p25: 61.00405042304192
+      p5: 53.14004525463097
+      p50: 73.38725555548444
+      p75: 87.19288480293471
+      p90: 96.54189069475979
+      p95: 100.42447948125191
+      p99: 119.0663584205974
+      p99p9: 121.53151420925984
+      units: s
+    time_per_output_token:
+      max: 0.10193800027668476
+      mean: 0.06458567625890964
+      min: 0.01357970859343186
+      p0p1: 0.013927717747333925
+      p1: 0.024653660137341358
+      p10: 0.04752015998554416
+      p25: 0.05502523326629307
+      p5: 0.04006614384695422
+      p50: 0.06323803596501239
+      p75: 0.07476395857718307
+      p90: 0.08647870970005171
+      p95: 0.09170922124406788
+      p99: 0.09943241989114787
+      p99p9: 0.10150184541726956
+      units: s/token
+    time_to_first_token:
+      max: 82.97379615763202
+      mean: 10.283888119488644
+      min: 0.1422104286029935
+      p0p1: 0.1455144939236343
+      p1: 0.19930893099401145
+      p10: 0.48383530997671187
+      p25: 0.7386440203990787
+      p5: 0.3816397454123944
+      p50: 1.279578204965219
+      p75: 2.8378604963654652
+      p90: 38.9979108533822
+      p95: 47.43120820836629
+      p99: 82.1979920047801
+      p99p9: 82.78179153117212
+      units: s
+  requests:
+    failures: 0
+    input_length:
+      max: 7641.0
+      mean: 7544.7626666666665
+      min: 7460.0
+      p0p1: 7466.986
+      p1: 7484.0
+      p10: 7511.0
+      p25: 7527.0
+      p5: 7505.0
+      p50: 7544.0
+      p75: 7562.0
+      p90: 7578.0
+      p95: 7585.0
+      p99: 7606.0
+      p99p9: 7639.503000000001
+      units: count
+    output_length:
+      max: 8564.0
+      mean: 1038.518
+      min: 950.0
+      p0p1: 960.996
+      p1: 986.0
+      p10: 994.0
+      p25: 996.0
+      p5: 993.0
+      p50: 998.0
+      p75: 1001.0
+      p90: 1003.0
+      p95: 1004.0
+      p99: 1008.0
+      p99p9: 8549.511000000002
+      units: count
+    total: 1500
+  throughput:
+    output_tokens_per_sec: 9662.322396954414
+    requests_per_sec: 9.30395274511796
+    total_tokens_per_sec: 79858.43772075126
+  time:
+    duration: 49.63024071790278
+scenario:
+  load:
+    args:
+      api:
+        headers: null
+        streaming: true
+        type: completion
+      circuit_breakers: null
+      data:
+        input_distribution: null
+        output_distribution: null
+        path: null
+        shared_prefix:
+          enable_multi_turn_chat: false
+          num_unique_system_prompts: 150
+          num_users_per_system_prompt: 5
+          output_len: 1000
+          question_len: 1200
+          system_prompt_len: 6000
+        trace: null
+        type: shared_prefix
+      load:
+        circuit_breakers: []
+        interval: 1.0
+        lora_traffic_split: null
+        num_workers: 256
+        request_timeout: null
+        stages:
+        - concurrency_level: null
+          duration: 50
+          num_requests: null
+          rate: 30.0
+        - concurrency_level: null
+          duration: 20
+          num_requests: null
+          rate: 5.0
+        - concurrency_level: null
+          duration: 20
+          num_requests: null
+          rate: 15.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 25.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 35.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 45.0
+        sweep: null
+        trace: null
+        type: poisson
+        worker_max_concurrency: 100
+        worker_max_tcp_connections: 2500
+      metrics: null
+      report:
+        prometheus:
+          per_stage: false
+          summary: true
+        request_lifecycle:
+          per_adapter: true
+          per_adapter_stage: false
+          per_request: true
+          per_stage: true
+          percentiles:
+          - 0.1
+          - 1.0
+          - 5.0
+          - 10.0
+          - 25.0
+          - 50.0
+          - 75.0
+          - 90.0
+          - 95.0
+          - 99.0
+          - 99.9
+          summary: true
+      server:
+        api_key: null
+        base_url: http://decode-clusterip.llm-d-granite-kv.svc.cluster.local:8000
+        cert_path: null
+        ignore_eos: true
+        key_path: null
+        model_name: ibm-granite/granite-4.1-8b
+        type: vllm
+      storage:
+        google_cloud_storage: null
+        local_storage:
+          path: /requests/inference-perf_1778388662_shared_prefix_k8s-mixed-granite
+          report_file_prefix: null
+        simple_storage_service: null
+      tokenizer:
+        pretrained_model_name_or_path: ibm-granite/granite-4.1-8b
+        token: null
+        trust_remote_code: null
+    metadata:
+      stage: 0
+    name: inference-perf
+  model:
+    name: unknown
+version: '0.1'

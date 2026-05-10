@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Benchmark artifacts we don't want in git:
+# Per-request lifecycle metrics can be 300-600MB per run (one entry per request)
+per_request_lifecycle_metrics.json
+
+# Full stdout/stderr of the launcher pod — not needed, can be >1MB
+stdout.log
+stderr.log
+
+# Duplicate copies of results (kubectl cp produced both timestamped and manual/ dirs)
+**/results-*/manual/
+
+# Local / throwaway
+*.swp
+*.tmp

@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: amd-vllm-smoke
+  namespace: llm-d-granite-kv
+  labels:
+    app: amd-vllm-smoke
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: sovereign-ai-stack-cl02-np-mi325x-node-01
+  containers:
+    - name: vllm
+      image: ghcr.io/llm-d/llm-d-rocm:v0.6.0
+      command: ["bash", "-c"]
+      args:
+        - |
+          set -euo pipefail
+          exec vllm serve ibm-granite/granite-4.1-8b \
+            --host 0.0.0.0 \
+            --port 8000 \
+            --tensor-parallel-size 1 \
+            --block-size 16 \
+            --gpu-memory-utilization 0.90 \
+            --kv-events-config '{"enable_kv_cache_events": true, "publisher": "zmq", "endpoint": "tcp://gaie-kv-events-epp.llm-d-granite-kv.svc.cluster.local:5557", "topic": "kv@'"$POD_IP"':8000@ibm-granite/granite-4.1-8b"}' \
+            --disable-uvicorn-access-log
+      env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HOME
+          value: /tmp
+        - name: HIP_VISIBLE_DEVICES
+          value: "0"
+        - name: VLLM_USE_V1
+          value: "1"
+        - name: VLLM_LOGGING_LEVEL
+          value: INFO
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llm-d-hf-token
+              key: HF_TOKEN
+      resources:
+        limits:
+          amd.com/gpu: 1
+          cpu: "16"
+          memory: 64Gi
+        requests:
+          amd.com/gpu: 1
+          cpu: "8"
+          memory: 32Gi
+      ports:
+        - containerPort: 8000
+          name: vllm
+      volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+  volumes:
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 20Gi
+  restartPolicy: Never

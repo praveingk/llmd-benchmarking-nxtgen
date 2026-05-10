@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: amdgpu-device-plugin-manual
+  namespace: openshift-amd-gpu
+  labels:
+    app: amdgpu-device-plugin
+    manual-install: "true"
+spec:
+  selector:
+    matchLabels:
+      app: amdgpu-device-plugin
+  template:
+    metadata:
+      labels:
+        app: amdgpu-device-plugin
+    spec:
+      serviceAccountName: amd-gpu-operator-kmm-device-plugin
+      restartPolicy: Always
+      priorityClassName: system-node-critical
+      nodeSelector:
+        feature.node.kubernetes.io/amd-gpu: "true"
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+      containers:
+        - name: amdgpu-dp
+          image: rocm/k8s-device-plugin:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: dp
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: sys
+              mountPath: /sys
+      volumes:
+        - name: dp
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: sys
+          hostPath:
+            path: /sys

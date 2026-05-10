@@ -1,31 +1,31 @@
 apiVersion: serving.kserve.io/v1alpha1
 kind: LLMInferenceService
 metadata:
-  name: qwen3-8b-instruct-pd
+  name: granite41-8b-instruct-pd
   annotations:
     # RoCE network required for KV cache transfer via RDMA
     k8s.v1.cni.cncf.io/networks: rdma-network
 spec:
   # Main/decode pool replica count
-  replicas: 1
+  replicas: 2
   model:
-    uri: oci://registry.redhat.io/rhelai1/modelcar-qwen3-8b-fp8-dynamic:latest
-    name: RedHatAI/Qwen3-8B-FP8-dynamic
+    uri: hf://ibm-granite/granite-4.1-8b
+    name: ibm-granite/granite-4.1-8b
   router:
     route: { }
     gateway: { }
     scheduler: { }
   template:
-    initContainers:
-      - name: copy-model
-        image: registry.redhat.io/rhelai1/modelcar-qwen3-8b-fp8-dynamic:latest
-        command: ["sh", "-c", "cp -r /models/* /mnt/models/ && echo 'Model copy complete'"]
-        volumeMounts:
-          - name: model-store
-            mountPath: /mnt/models
-    volumes:
-      - name: model-store
-        emptyDir: {}
+    # initContainers:
+    #   - name: copy-model
+    #     image: registry.redhat.io/rhelai1/modelcar-qwen3-8b-fp8-dynamic:latest
+    #     command: ["sh", "-c", "cp -r /models/* /mnt/models/ && echo 'Model copy complete'"]
+    #     volumeMounts:
+    #       - name: model-store
+    #         mountPath: /mnt/models
+    # volumes:
+    #   - name: model-store
+    #     emptyDir: {}
     containers:
       - name: main
         securityContext:
@@ -34,9 +34,9 @@ spec:
           capabilities:
             add:
             - IPC_LOCK
-        volumeMounts:
-          - name: model-store
-            mountPath: /mnt/models
+        # volumeMounts:
+        #   - name: model-store
+        #     mountPath: /mnt/models
         env:
           # Enable RDMA for KV cache transfer
           - name: KSERVE_INFER_ROCE
@@ -50,8 +50,8 @@ spec:
           - name: VLLM_ADDITIONAL_ARGS
             value: "--kv_transfer_config '{\"kv_connector\":\"NixlConnector\",\"kv_role\":\"kv_both\"}'"
           # UCX configuration for RDMA transport
-          - name: UCX_PROTO_INFO
-            value: "y"
+          - name: UCX_TLS
+            value: "^tcp"
           - name: UCX_LOG_LEVEL
             value: "info"
         resources:
@@ -78,16 +78,16 @@ spec:
     # Prefill pool replica count (higher for concurrent prefill requests)
     replicas: 2
     template:
-      initContainers:
-        - name: copy-model
-          image: registry.redhat.io/rhelai1/modelcar-qwen3-8b-fp8-dynamic:latest
-          command: ["sh", "-c", "cp -r /models/* /mnt/models/ && echo 'Model copy complete'"]
-          volumeMounts:
-            - name: model-store
-              mountPath: /mnt/models
-      volumes:
-        - name: model-store
-          emptyDir: {}
+      # initContainers:
+      #   - name: copy-model
+      #     image: registry.redhat.io/rhelai1/modelcar-qwen3-8b-fp8-dynamic:latest
+      #     command: ["sh", "-c", "cp -r /models/* /mnt/models/ && echo 'Model copy complete'"]
+      #     volumeMounts:
+      #       - name: model-store
+      #         mountPath: /mnt/models
+      # volumes:
+      #   - name: model-store
+      #     emptyDir: {}
       containers:
         - name: main
           securityContext:
@@ -96,9 +96,9 @@ spec:
             capabilities:
               add:
               - IPC_LOCK
-          volumeMounts:
-            - name: model-store
-              mountPath: /mnt/models
+          # volumeMounts:
+          #   - name: model-store
+          #     mountPath: /mnt/models
           env:
             - name: KSERVE_INFER_ROCE
               value: "false"
