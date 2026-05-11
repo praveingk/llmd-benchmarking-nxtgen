@@ -1,0 +1,146 @@
+multinode: false
+
+modelArtifacts:
+  uri: "hf://ibm-granite/granite-4.1-8b"
+  name: "ibm-granite/granite-4.1-8b"
+  size: 40Gi
+  authSecretName: "llm-d-hf-token"
+  labels:
+    llm-d.ai/inference-serving: "true"
+    llm-d.ai/guide: "precise-prefix-cache-aware"
+    llm-d.ai/accelerator-variant: "hpu"
+    llm-d.ai/accelerator-vendor: "intel-habana"
+    llm-d.ai/model: "granite-4.1-8b"
+
+routing:
+  proxy:
+    enabled: false
+
+accelerator:
+  type: intel-gaudi
+
+decode:
+  create: true
+  parallelism:
+    tensor: 1
+    data: 1
+  replicas: 8
+  nodeSelector:
+    habana.ai/device.type: GAUDI3
+  monitoring:
+    podmonitor:
+      enabled: false
+  containers:
+    - name: "vllm"
+      image: ghcr.io/llm-d/llm-d-hpu:v0.6.0
+      modelCommand: custom
+      command:
+        - /bin/sh
+        - "-c"
+      args:
+        - |
+          set -x
+          exec vllm serve ibm-granite/granite-4.1-8b \
+            --host 0.0.0.0 \
+            --port 8000 \
+            --tensor-parallel-size 1 \
+            --block-size 16 \
+            --dtype bfloat16 \
+            --kv-events-config "{\"enable_kv_cache_events\":true,\"publisher\":\"zmq\",\"endpoint\":\"tcp://gaie-${GAIE_RELEASE_NAME_POSTFIX}-epp.${NAMESPACE}.svc.cluster.local:5557\",\"topic\":\"kv@${POD_IP}:8000@ibm-granite/granite-4.1-8b\"}"
+      env:
+        - name: GAIE_RELEASE_NAME_POSTFIX
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: HOME
+          value: /tmp
+        - name: PT_HPU_LAZY_MODE
+          value: "1"
+        - name: PT_HPU_ENABLE_LAZY_COLLECTIVES
+          value: "true"
+        # NOTE: VLLM_SKIP_WARMUP removed so vllm_gaudi pre-compiles HPU graphs for
+        # our bucket shapes at boot. Narrow buckets to avoid HPU HBM OOM.
+        # Workload: ~6000 system + ~1200 question = ~7200-prompt, 1000 output.
+        - name: VLLM_PROMPT_SEQ_BUCKET_MIN
+          value: "1024"
+        - name: VLLM_PROMPT_SEQ_BUCKET_STEP
+          value: "2048"
+        - name: VLLM_PROMPT_SEQ_BUCKET_MAX
+          value: "8192"
+        - name: VLLM_PROMPT_BS_BUCKET_MIN
+          value: "1"
+        - name: VLLM_PROMPT_BS_BUCKET_MAX
+          value: "4"
+        - name: VLLM_DECODE_BLOCK_BUCKET_MIN
+          value: "256"
+        - name: VLLM_DECODE_BLOCK_BUCKET_STEP
+          value: "256"
+        - name: VLLM_DECODE_BLOCK_BUCKET_MAX
+          value: "1024"
+        - name: VLLM_DECODE_BS_BUCKET_MAX
+          value: "8"
+        - name: VLLM_GRAPH_RESERVED_MEM
+          value: "0.15"
+        - name: VLLM_BUILD
+          value: "1.23.0.695"
+        - name: VLLM_LOGGING_LEVEL
+          value: INFO
+      ports:
+        - containerPort: 8000
+          name: vllm
+          protocol: TCP
+      resources:
+        limits:
+          cpu: "16"
+          memory: 96Gi
+        requests:
+          cpu: "8"
+          memory: 48Gi
+      mountModelVolume: true
+      volumeMounts:
+        - name: metrics-volume
+          mountPath: /.config
+        - name: shm
+          mountPath: /dev/shm
+        - name: habana-logs
+          mountPath: /var/log/habana_logs
+      startupProbe:
+        httpGet:
+          path: /v1/models
+          port: vllm
+        initialDelaySeconds: 60
+        periodSeconds: 30
+        timeoutSeconds: 10
+        failureThreshold: 120
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: vllm
+        periodSeconds: 30
+        timeoutSeconds: 10
+        failureThreshold: 20
+      readinessProbe:
+        httpGet:
+          path: /v1/models
+          port: vllm
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 6
+  volumes:
+    - name: metrics-volume
+      emptyDir: {}
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 20Gi
+    - name: habana-logs
+      emptyDir: {}
+
+prefill:
+  create: false

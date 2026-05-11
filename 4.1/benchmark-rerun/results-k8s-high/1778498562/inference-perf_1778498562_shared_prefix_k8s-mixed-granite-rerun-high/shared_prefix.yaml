@@ -1,0 +1,36 @@
+load:
+  type: poisson
+  stages:
+    - rate: 25
+      duration: 30
+    - rate: 55
+      duration: 30
+    - rate: 65
+      duration: 30
+api:
+  type: completion
+  streaming: true
+server:
+  type: vllm
+  model_name: ibm-granite/granite-4.1-8b
+  base_url: http://decode-clusterip.llm-d-granite-kv.svc.cluster.local:8000
+  ignore_eos: true
+tokenizer:
+  pretrained_model_name_or_path: ibm-granite/granite-4.1-8b
+data:
+  type: shared_prefix
+  shared_prefix:
+    num_groups: 150
+    num_prompts_per_group: 5
+    system_prompt_len: 6000
+    question_len: 1200
+    output_len: 1000
+    enable_multi_turn_chat: false
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+storage:
+  local_storage:
+    path: /requests/inference-perf_1778498562_shared_prefix_k8s-mixed-granite-rerun-high
