@@ -8,7 +8,9 @@
 ## Sarvam-30b 
 
 # AMD - 8 GPUs (Prefix-caching)
-## Granite-8b
+## Granite-8b ✅ 
+![alt text](2.2/precise-prefix-granite-amd/benchmark/comparison_amd_only.png)
+
 ## Sarvam-30b
 
 # NVIDIA + AMD - 12 GPUs (Prefix-caching)
@@ -55,3 +57,9 @@ rate   llmd_TTFT    k8s_TTFT     llmd_tok   k8s_tok
 Consistent with the original run: llm-d scales cleanly through rate 65 (~17 K tok/s), k8s plateaus around 11 K from rate 25 onward, TTFT gap widens (2-5× llm-d advantage from rate 35+). Results reproduce.
 
 ## Sarvam-30b
+
+
+# NVIDIA - 4 GPUs (PD Disaggregation)
+
+## Sarvam-30b 
+Trying with llm-d 0.7
