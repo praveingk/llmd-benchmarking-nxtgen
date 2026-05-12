@@ -9,6 +9,8 @@
 
 # AMD - 8 GPUs (Prefix-caching)
 ## Granite-8b ✅ 
+Interesting results, seeing TTFT increase
+
 ![alt text](2.2/precise-prefix-granite-amd/benchmark/comparison_amd_only.png)
 
 ## Sarvam-30b
@@ -58,7 +60,10 @@ Consistent with the original run: llm-d scales cleanly through rate 65 (~17 K to
 
 ## Sarvam-30b
 
+# NVIDIA + AMD + Gaudi
 
+## Granite-8b ✅ 
+![alt text](4.2/benchmark/comparison_3vendor_pool.png)
 # NVIDIA - 4 GPUs (PD Disaggregation)
 
 ## Sarvam-30b 
