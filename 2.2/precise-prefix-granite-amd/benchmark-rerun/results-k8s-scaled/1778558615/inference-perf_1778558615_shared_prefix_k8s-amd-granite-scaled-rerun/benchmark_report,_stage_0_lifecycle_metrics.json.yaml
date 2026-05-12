@@ -1,0 +1,243 @@
+metrics:
+  latency:
+    inter_token_latency:
+      max: 0.764445757959038
+      mean: 0.05507335597280016
+      min: 5.395151674747467e-06
+      p0p1: 6.085002794861793e-06
+      p1: 9.614452719688416e-06
+      p10: 0.030254437495023014
+      p25: 0.03567219013348222
+      p5: 0.01208084644749761
+      p50: 0.0421136892400682
+      p75: 0.04520273394882679
+      p90: 0.058895090501755475
+      p95: 0.06970461988821604
+      p99: 0.4530167696811256
+      p99p9: 0.4979775174651297
+      units: s/token
+    normalized_time_per_output_token:
+      max: 0.08273882517047458
+      mean: 0.056041119990439
+      min: 0.028305478826564603
+      p0p1: 0.029504468703489224
+      p1: 0.03561962157893122
+      p10: 0.04232446716685609
+      p25: 0.04792359950787899
+      p5: 0.04040053464757372
+      p50: 0.05605719126518474
+      p75: 0.06295300223499756
+      p90: 0.06852731152353932
+      p95: 0.07492019911896841
+      p99: 0.08179126564222705
+      p99p9: 0.08270046343776512
+      units: s/token
+    request_latency:
+      max: 82.76404274534434
+      mean: 55.92505688463276
+      min: 28.248867868911475
+      p0p1: 29.423059972564225
+      p1: 35.654931751866826
+      p10: 42.25339108677581
+      p25: 47.75505995878484
+      p5: 40.389280501171015
+      p50: 55.79751393687911
+      p75: 62.90461729688104
+      p90: 68.35039899460972
+      p95: 74.6954385216115
+      p99: 81.64231464992277
+      p99p9: 82.58292701241749
+      units: s
+    time_per_output_token:
+      max: 0.08227870347583667
+      mean: 0.05507235795840165
+      min: 0.027970469641964882
+      p0p1: 0.02891331226565037
+      p1: 0.03522926019879989
+      p10: 0.04134203970707022
+      p25: 0.046981892956847834
+      p5: 0.03914648115826249
+      p50: 0.05505170294027495
+      p75: 0.061669163800494683
+      p90: 0.0673745660073124
+      p95: 0.07363685727633999
+      p99: 0.07996536946773529
+      p99p9: 0.08207832512604309
+      units: s/token
+    time_to_first_token:
+      max: 2.2330808308906853
+      mean: 0.8588296809606254
+      min: 0.19456777861341834
+      p0p1: 0.1972461117473431
+      p1: 0.2125020138034597
+      p10: 0.4484417005442083
+      p25: 0.5263965540798381
+      p5: 0.2631337706698105
+      p50: 0.7441480550915003
+      p75: 1.1224303169874474
+      p90: 1.5508439981844278
+      p95: 1.7602824582951142
+      p99: 2.085079309120774
+      p99p9: 2.186057604108943
+      units: s
+  requests:
+    failures: 0
+    input_length:
+      max: 7615.0
+      mean: 7546.750666666667
+      min: 7479.0
+      p0p1: 7479.749
+      p1: 7493.49
+      p10: 7516.0
+      p25: 7531.25
+      p5: 7508.0
+      p50: 7546.0
+      p75: 7563.0
+      p90: 7577.0
+      p95: 7585.0
+      p99: 7599.02
+      p99p9: 7613.502
+      units: count
+    output_length:
+      max: 1011.0
+      mean: 997.908
+      min: 836.0
+      p0p1: 922.135
+      p1: 983.0
+      p10: 994.0
+      p25: 996.0
+      p5: 992.0
+      p50: 998.0
+      p75: 1000.0
+      p90: 1002.0
+      p95: 1004.0
+      p99: 1007.0
+      p99p9: 1009.5020000000002
+      units: count
+    total: 750
+  throughput:
+    output_tokens_per_sec: 7552.230558916887
+    requests_per_sec: 7.568062946601177
+    total_tokens_per_sec: 64666.51464655462
+  time:
+    duration: 48.970329789910465
+scenario:
+  load:
+    args:
+      api:
+        headers: null
+        streaming: true
+        type: completion
+      circuit_breakers: null
+      data:
+        input_distribution: null
+        output_distribution: null
+        path: null
+        shared_prefix:
+          enable_multi_turn_chat: false
+          num_unique_system_prompts: 150
+          num_users_per_system_prompt: 5
+          output_len: 1000
+          question_len: 1200
+          system_prompt_len: 6000
+        trace: null
+        type: shared_prefix
+      load:
+        circuit_breakers: []
+        interval: 1.0
+        lora_traffic_split: null
+        num_workers: 256
+        request_timeout: null
+        stages:
+        - concurrency_level: null
+          duration: 50
+          num_requests: null
+          rate: 15.0
+        - concurrency_level: null
+          duration: 20
+          num_requests: null
+          rate: 3.0
+        - concurrency_level: null
+          duration: 20
+          num_requests: null
+          rate: 10.0
+        - concurrency_level: null
+          duration: 20
+          num_requests: null
+          rate: 15.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 20.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 25.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 30.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 40.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 50.0
+        - concurrency_level: null
+          duration: 25
+          num_requests: null
+          rate: 60.0
+        sweep: null
+        trace: null
+        type: poisson
+        worker_max_concurrency: 100
+        worker_max_tcp_connections: 2500
+      metrics: null
+      report:
+        prometheus:
+          per_stage: false
+          summary: true
+        request_lifecycle:
+          per_adapter: true
+          per_adapter_stage: false
+          per_request: true
+          per_stage: true
+          percentiles:
+          - 0.1
+          - 1.0
+          - 5.0
+          - 10.0
+          - 25.0
+          - 50.0
+          - 75.0
+          - 90.0
+          - 95.0
+          - 99.0
+          - 99.9
+          summary: true
+      server:
+        api_key: null
+        base_url: http://decode-clusterip.llm-d-granite-kv.svc.cluster.local:8000
+        cert_path: null
+        ignore_eos: true
+        key_path: null
+        model_name: ibm-granite/granite-4.1-8b
+        type: vllm
+      storage:
+        google_cloud_storage: null
+        local_storage:
+          path: /requests/inference-perf_1778558615_shared_prefix_k8s-amd-granite-scaled-rerun
+          report_file_prefix: null
+        simple_storage_service: null
+      tokenizer:
+        pretrained_model_name_or_path: ibm-granite/granite-4.1-8b
+        token: null
+        trust_remote_code: null
+    metadata:
+      stage: 0
+    name: inference-perf
+  model:
+    name: unknown
+version: '0.1'
