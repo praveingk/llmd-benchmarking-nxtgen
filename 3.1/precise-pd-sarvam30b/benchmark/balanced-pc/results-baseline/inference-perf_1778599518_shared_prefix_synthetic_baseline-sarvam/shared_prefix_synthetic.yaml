@@ -1,0 +1,45 @@
+load:
+  type: constant
+  stages:
+    - rate: 1
+      duration: 60
+    - rate: 2
+      duration: 60
+    - rate: 3
+      duration: 60
+    - rate: 5
+      duration: 60
+    - rate: 7
+      duration: 60
+    - rate: 10
+      duration: 60
+    - rate: 12
+      duration: 60
+    - rate: 15
+      duration: 60
+api:
+  type: completion
+  streaming: true
+server:
+  type: vllm
+  model_name: sarvamai/sarvam-30b
+  base_url: http://baseline-svc.llm-d-pd-sarvam.svc.cluster.local:8000
+  ignore_eos: true
+tokenizer:
+  pretrained_model_name_or_path: sarvamai/sarvam-30b
+data:
+  type: shared_prefix
+  shared_prefix:
+    num_groups: 32
+    num_prompts_per_group: 32
+    system_prompt_len: 1500
+    question_len: 1500
+    output_len: 2000
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+storage:
+  local_storage:
+    path: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
