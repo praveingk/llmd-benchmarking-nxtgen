@@ -76,6 +76,8 @@ decode:
           value: "info"
         - name: KSERVE_INFER_ROCE
           value: "false"
+        - name: HF_HOME
+          value: /root/.cache/huggingface
       ports:
         - containerPort: 8200
           name: vllm
@@ -89,7 +91,7 @@ decode:
           cpu: "8"
           memory: 48Gi
           openshift.io/rdma: 1
-      mountModelVolume: true
+      mountModelVolume: false
       volumeMounts:
         - name: metrics-volume
           mountPath: /.config
@@ -97,6 +99,8 @@ decode:
           mountPath: /dev/shm
         - name: torch-compile-cache
           mountPath: /.cache
+        - name: hf-cache
+          mountPath: /root/.cache/huggingface
       extraConfig:
         startupProbe:
           httpGet:
@@ -134,6 +138,10 @@ decode:
       emptyDir: {}
     - name: torch-compile-cache
       emptyDir: {}
+    - name: hf-cache
+      hostPath:
+        path: /var/lib/llm-d-hf-cache
+        type: DirectoryOrCreate
 
 # --- PREFILL: 2 replicas, TP=1, one per H100-NVL node (antiAffinity on hostname) ---
 prefill:
@@ -189,6 +197,8 @@ prefill:
           value: "y"
         - name: KSERVE_INFER_ROCE
           value: "false"
+        - name: HF_HOME
+          value: /root/.cache/huggingface
       ports:
         - containerPort: 8000
           name: vllm
@@ -202,7 +212,7 @@ prefill:
           cpu: "8"
           memory: 48Gi
           openshift.io/rdma: 1
-      mountModelVolume: true
+      mountModelVolume: false
       volumeMounts:
         - name: metrics-volume
           mountPath: /.config
@@ -210,6 +220,8 @@ prefill:
           mountPath: /dev/shm
         - name: torch-compile-cache
           mountPath: /.cache
+        - name: hf-cache
+          mountPath: /root/.cache/huggingface
       extraConfig:
         startupProbe:
           httpGet:
