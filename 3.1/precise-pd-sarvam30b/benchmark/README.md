@@ -89,6 +89,39 @@ In-run prefill hit rate observed at 77% during steady state — most of each pro
 
 ![long-ISL](comparison_pd_vs_baseline.png)
 
+## 2P:2D topology (4 TP=1 pods each) — three workloads vs 4-replica TP=1 baseline
+
+After the 1P:1D findings, we re-ran with `2P:2D at TP=1` (2 prefill + 2 decode, each on 1 GPU, spread via podAntiAffinity) and compared to a `4-replica TP=1 monolithic` baseline — same 4-pod / 4-GPU footprint, just with or without the PD split + llm-d EPP routing.
+
+| sub-dir                    | workload                          | throughput winner   | TTFT winner | p99 ITL winner                               |
+| -------------------------- | --------------------------------- | ------------------- | ----------- | -------------------------------------------- |
+| `benchmark/2p2d-long-gen/` | ISL=2k, OSL=6k (reasoning/agent)  | baseline +12-51%    | baseline 2-3× | baseline at all rates                      |
+| `benchmark/2p2d-balanced/` | ISL=3k, OSL=2k (chat)             | baseline +9-24%     | baseline 2-3× | **PD wins rate 5-12 (1.33-1.41×)**         |
+| `benchmark/2p2d-prefill-heavy/` | ISL=8k, OSL=500 (summarization) | ~tied (±3%)        | baseline ~2× | **PD wins rate 7 (1.89×)**                 |
+
+![2p2d-long-gen](2p2d-long-gen/comparison_2p2d.png)
+![2p2d-balanced](2p2d-balanced/comparison_2p2d.png)
+![2p2d-prefill-heavy](2p2d-prefill-heavy/comparison_2p2d.png)
+
+### Pattern across workloads
+
+PD's decode-isolation p99 advantage shows up when **prefill contention per second is high** relative to decode time per request:
+
+- **Short OSL (prefill-heavy, OSL=500) at high rate**: many new-prefill interruptions on baseline's 4 pods → PD wins p99 ITL 1.89× at rate=7.
+- **Moderate OSL (balanced, OSL=2k) at mid rate**: same effect, PD wins p99 ITL 1.33-1.41× at rates 5-12.
+- **Long OSL (long-gen, OSL=6k)**: each request spends enough time in decode that continuous batching on baseline absorbs the prefill interleaving cleanly — PD coordination overhead (NIXL + EPP routing) dominates, baseline wins everywhere.
+
+On **raw throughput**, 4 monolithic TP=1 pods win every workload. With 4× horizontal replication, each pod's batch is small enough that prefill-decode interference is manageable, and PD's loss of half its decode capacity (2 decode pods vs 4 decode-capable pods in baseline) is never recouped.
+
+### vs the original 1P:1D PD run (long-gen, OSL=6k)
+
+| rate | 1P:1D PD p99 | 2P:2D PD p99 | 4-TP=2 baseline p99 | 4-TP=1 baseline p99 |
+|-----:|-------------:|-------------:|---------------------:|---------------------:|
+|  5   | 43.6ms       | 36.3ms       | 67.6ms              | **27.5ms**          |
+|  7   | 76.4ms       | 42.1ms       | 70.1ms              | **31.3ms**          |
+
+The original 1P:1D PD advantage over the 2×TP=2 baseline was **a routing story, not a disaggregation story** — when the baseline is properly scaled out to 4×TP=1, it matches or beats PD on tail latency for decode-heavy workloads.
+
 ## Findings
 
 1. **PD's decode-isolation benefit is real — it shows up on tail latency, not throughput.** Long-generation workload (Run 4) exposes PD's p99 ITL advantage: 1.5-2.2× lower than baseline at rate 1-5. This is the value proposition the llm-d guide promises.
@@ -122,5 +155,9 @@ benchmark/
 ├── results-baseline/           run 1 baseline per-stage JSONs
 ├── decode-heavy/               run 2 (same structure)
 ├── balanced-pc/                run 3 (same structure, prefix-cache ON)
-└── long-gen/                   run 4 (same structure, ISL=2k/OSL=6k, the PD win)
+├── long-gen/                   run 4 (ISL=2k/OSL=6k, the initial "PD wins" result vs 2×TP=2 baseline)
+├── plot_2p2d.py                plot script for 2P:2D runs
+├── 2p2d-long-gen/              run 5 (2P:2D PD vs 4×TP=1 baseline, OSL=6k)
+├── 2p2d-balanced/              run 6 (2P:2D PD vs 4×TP=1 baseline, OSL=2k)
+└── 2p2d-prefill-heavy/         run 7 (2P:2D PD vs 4×TP=1 baseline, OSL=500)
 ```
