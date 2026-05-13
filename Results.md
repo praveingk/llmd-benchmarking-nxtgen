@@ -31,4 +31,6 @@ Not yet finalized.
 
 # NVIDIA - 4 GPUs (PD Disaggregation)
 ## Sarvam-30b 
-Trying with llm-d 0.7
+
+![Trying with llm-d 0.7](3.1/precise-pd-sarvam30b/benchmark/comparison_2p2d_highlights.png)
+**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput **
