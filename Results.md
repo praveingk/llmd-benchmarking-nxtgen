@@ -4,7 +4,11 @@
 
 **Highlight :  llm-d improves TTFT by upto 16x compared to K8s, and throughput (Output tok/s) by 25-36%**
 
-## Sarvam-30b 
+## Sarvam-30b ✅ 
+
+![alt text](2.1/precise-prefix-sarvam-30b/benchmark/comparison_rates_3_to_50.png)
+
+**Highlight: llm-d delivers 2× the throughput and 22× better TTFT. k8s saturates around rate=25-30; llm-d keeps scaling**
 
 # AMD - 8 GPUs (Prefix-caching)
 ## Granite-8b ✅ 
@@ -21,7 +25,8 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 ![alt text](4.1/benchmark/comparison_mixed_pool_1.png)
 
 **Highlight: While K8s throughput plateaus at 10-11 K tok/s, llm-d goes upto 19.4K tok/s, 85% higher throughput. TTFT-wise llm-d does 3.4-5.6x faster for higher rates**
-## Sarvam-30b
+## Sarvam-30b 
+
 
 # NVIDIA + AMD + Gaudi
 
@@ -33,4 +38,5 @@ Not yet finalized.
 ## Sarvam-30b 
 
 ![Trying with llm-d 0.7](3.1/precise-pd-sarvam30b/benchmark/comparison_2p2d_highlights.png)
-**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput **
+
+**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput. PD's ideally works bestfor serving larger models 120b+, hence we do not see throughput gains **
