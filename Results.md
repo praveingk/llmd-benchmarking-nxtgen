@@ -25,8 +25,10 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 ![alt text](4.1/benchmark/comparison_mixed_pool_1.png)
 
 **Highlight: While K8s throughput plateaus at 10-11 K tok/s, llm-d goes upto 19.4K tok/s, 85% higher throughput. TTFT-wise llm-d does 3.4-5.6x faster for higher rates**
+
 ## Sarvam-30b 
 
+![alt text](4.1/precise-prefix-sarvam-30b-mixed/benchmark/comparison_rates_3_to_90_mixed.png)
 
 # NVIDIA + AMD + Gaudi
 
