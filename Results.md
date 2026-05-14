@@ -18,6 +18,10 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 
 ## Sarvam-30b
 
+![alt text](2.2/precise-prefix-sarvam-30b-amd/benchmark/comparison_rates_5_to_200_amd.png)
+
+**Highlight: While K8s throughput plateaus at 15-17 K tok/s, llm-d goes upto 29K tok/s, 85% higher throughput. TTFT-wise llm-d upto  5x faster for lower rates**
+
 # NVIDIA + AMD - 12 GPUs (Prefix-caching)
 
 ## Granite-8b ✅ 
