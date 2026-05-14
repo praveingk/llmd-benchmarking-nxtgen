@@ -14,8 +14,8 @@ BASE = pathlib.Path(__file__).parent
 LLMD = next(BASE.glob("results-llmd-scaled/**/inference-perf_*_llmd-precise-sarvam-scaled"))
 K8S = next(BASE.glob("results-k8s-scaled/**/inference-perf_*_k8s-roundrobin-sarvam-scaled"))
 
-STAGE_RATE = {0: 15, 1: 3, 2: 10, 3: 15, 4: 20, 5: 25, 6: 30, 7: 40, 8: 50, 9: 60, 10: 70, 11: 80, 12: 90}
-INCLUDE_STAGES = list(range(1, 13))  # skip warmup
+STAGE_RATE = {0: 15, 1: 5, 2: 25, 3: 50, 4: 75, 5: 100, 6: 125, 7: 150, 8: 175, 9: 200}
+INCLUDE_STAGES = list(range(1, 10))  # skip warmup
 
 
 def load_stage(root: pathlib.Path, stage: int) -> dict:
@@ -58,7 +58,7 @@ ax2.legend()
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
-out = BASE / "comparison_rates_3_to_90_mixed.png"
+out = BASE / "comparison_rates_5_to_200_mixed.png"
 plt.savefig(out, dpi=120, bbox_inches="tight")
 print(f"saved: {out}")
 

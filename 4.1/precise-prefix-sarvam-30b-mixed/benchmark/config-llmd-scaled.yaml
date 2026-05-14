@@ -29,30 +29,24 @@ workload:
       # Warmup — seat residents
       - rate: 15
         duration: 50
-      # Main ladder (guide stages, extended to 50 req/s for prefix-cache benefit visibility)
-      - rate: 3
-        duration: 20
-      - rate: 10
-        duration: 20
-      - rate: 15
-        duration: 20
-      - rate: 20
+      # Main ladder (steps of 25 throughout, up to 200 QPS)
+      - rate: 5
         duration: 30
       - rate: 25
         duration: 30
-      - rate: 30
-        duration: 30
-      - rate: 40
-        duration: 30
       - rate: 50
         duration: 30
-      - rate: 60
+      - rate: 75
         duration: 30
-      - rate: 70
+      - rate: 100
         duration: 30
-      - rate: 80
+      - rate: 125
         duration: 30
-      - rate: 90
+      - rate: 150
+        duration: 30
+      - rate: 175
+        duration: 30
+      - rate: 200
         duration: 30
     api:
       type: completion
