@@ -28,7 +28,7 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 
 ## Sarvam-30b 
 
-![alt text](4.1/precise-prefix-sarvam-30b-mixed/benchmark/comparison_rates_3_to_90_mixed.png)
+![alt text](4.1/precise-prefix-sarvam-30b-mixed/benchmark/comparison_rates_5_to_200_mixed.png)
 
 # NVIDIA + AMD + Gaudi
 
