@@ -30,6 +30,8 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 
 ![alt text](4.1/precise-prefix-sarvam-30b-mixed/benchmark/comparison_rates_5_to_200_mixed.png)
 
+**llm-d brings down TTFT by 2.85-4.54× , increases throughput by close to 3x at rate=200.**
+
 # NVIDIA + AMD + Gaudi
 
 ## Granite-8b ✅ 
@@ -41,4 +43,4 @@ Not yet finalized.
 
 ![Trying with llm-d 0.7](3.1/precise-pd-sarvam30b/benchmark/comparison_2p2d_highlights.png)
 
-**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput. PD's ideally works bestfor serving larger models 120b+, hence we do not see throughput gains **
+**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput. PD's ideally works bestfor serving larger models 120b+, hence we do not see throughput gains**
