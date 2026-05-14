@@ -1,0 +1,243 @@
+metrics:
+  latency:
+    inter_token_latency:
+      max: 1.1588779259473085
+      mean: 0.03148130378485656
+      min: 5.193054676055908e-06
+      p0p1: 5.653299391269684e-06
+      p1: 6.6387839615345e-06
+      p10: 0.005704643018543721
+      p25: 0.009272457100450993
+      p5: 0.0005104498937726054
+      p50: 0.01238368358463049
+      p75: 0.018603334203362465
+      p90: 0.030662465654313565
+      p95: 0.13679974284023044
+      p99: 0.4584957596845925
+      p99p9: 1.0274343964494768
+      units: s/token
+    normalized_time_per_output_token:
+      max: 0.0877637197889054
+      mean: 0.03554996842558087
+      min: 0.004878190302903333
+      p0p1: 0.00504354820707918
+      p1: 0.006197755689111848
+      p10: 0.013317403447536631
+      p25: 0.01839286012899052
+      p5: 0.01103694391325328
+      p50: 0.02920992120095381
+      p75: 0.050419161187274034
+      p90: 0.07188260667689668
+      p95: 0.07784725967786933
+      p99: 0.08311785287367972
+      p99p9: 0.08729620051666619
+      units: s/token
+    request_latency:
+      max: 17.640507677569985
+      mean: 7.156284252934778
+      min: 1.0000290120951831
+      p0p1: 1.0186508926870301
+      p1: 1.2457488935114815
+      p10: 2.6813375343568624
+      p25: 3.7001957333413884
+      p5: 2.2119036317802965
+      p50: 5.888178401393816
+      p75: 10.1132739194436
+      p90: 14.383710634149613
+      p95: 15.663989719748495
+      p99: 16.71949640240986
+      p99p9: 17.5465363038499
+      units: s
+    time_per_output_token:
+      max: 0.08125814563129097
+      mean: 0.03145028582912513
+      min: 0.0044371420400563496
+      p0p1: 0.004552620805224821
+      p1: 0.005487598579692033
+      p10: 0.011722528570797294
+      p25: 0.015796502734035687
+      p5: 0.009766375555798528
+      p50: 0.025185614211959858
+      p75: 0.04384570611561251
+      p90: 0.06363462904910558
+      p95: 0.07220470014901366
+      p99: 0.07787161389880348
+      p99p9: 0.08106822328776123
+      units: s/token
+    time_to_first_token:
+      max: 4.668557154014707
+      mean: 0.8621598156212519
+      min: 0.07311715465039015
+      p0p1: 0.08029180651484058
+      p1: 0.08847354729194194
+      p10: 0.1385546586010605
+      p25: 0.2012329912977293
+      p5: 0.12034680666401983
+      p50: 0.48769525857642293
+      p75: 1.202375685563311
+      p90: 2.198151558823884
+      p95: 2.7452353421598663
+      p99: 3.8611811038153245
+      p99p9: 4.603517848383177
+      units: s
+  requests:
+    failures: 0
+    input_length:
+      max: 11706.0
+      mean: 11626.034666666666
+      min: 11503.0
+      p0p1: 11528.466
+      p1: 11555.98
+      p10: 11589.0
+      p25: 11604.0
+      p5: 11579.0
+      p50: 11623.0
+      p75: 11644.75
+      p90: 11672.0
+      p95: 11680.0
+      p99: 11697.0
+      p99p9: 11705.251
+      units: count
+    output_length:
+      max: 208.0
+      mean: 201.28266666666667
+      min: 198.0
+      p0p1: 198.0
+      p1: 199.0
+      p10: 200.0
+      p25: 201.0
+      p5: 200.0
+      p50: 201.0
+      p75: 202.0
+      p90: 203.0
+      p95: 203.0
+      p99: 205.0
+      p99p9: 207.2510000000001
+      units: count
+    total: 750
+  throughput:
+    output_tokens_per_sec: 4063.7263720796
+    requests_per_sec: 20.1891520982744
+    total_tokens_per_sec: 238783.50855722386
+  time:
+    duration: 30.393439021892846
+scenario:
+  load:
+    args:
+      api:
+        headers: null
+        streaming: true
+        type: completion
+      circuit_breakers: null
+      data:
+        input_distribution: null
+        output_distribution: null
+        path: null
+        shared_prefix:
+          enable_multi_turn_chat: false
+          num_unique_system_prompts: 150
+          num_users_per_system_prompt: 20
+          output_len: 200
+          question_len: 1200
+          system_prompt_len: 10000
+        trace: null
+        type: shared_prefix
+      load:
+        circuit_breakers: []
+        interval: 1.0
+        lora_traffic_split: null
+        num_workers: 256
+        request_timeout: null
+        stages:
+        - concurrency_level: null
+          duration: 50
+          num_requests: null
+          rate: 15.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 5.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 25.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 50.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 75.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 100.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 125.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 150.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 175.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 200.0
+        sweep: null
+        trace: null
+        type: poisson
+        worker_max_concurrency: 100
+        worker_max_tcp_connections: 2500
+      metrics: null
+      report:
+        prometheus:
+          per_stage: false
+          summary: true
+        request_lifecycle:
+          per_adapter: true
+          per_adapter_stage: false
+          per_request: true
+          per_stage: true
+          percentiles:
+          - 0.1
+          - 1.0
+          - 5.0
+          - 10.0
+          - 25.0
+          - 50.0
+          - 75.0
+          - 90.0
+          - 95.0
+          - 99.0
+          - 99.9
+          summary: true
+      server:
+        api_key: null
+        base_url: http://decode-clusterip.llm-d-sarvam-kv.svc.cluster.local:8000
+        cert_path: null
+        ignore_eos: true
+        key_path: null
+        model_name: sarvamai/sarvam-30b
+        type: vllm
+      storage:
+        google_cloud_storage: null
+        local_storage:
+          path: /requests/inference-perf_1778751661_shared_prefix_k8s-roundrobin-sarvam-scaled
+          report_file_prefix: null
+        simple_storage_service: null
+      tokenizer:
+        pretrained_model_name_or_path: sarvamai/sarvam-30b
+        token: null
+        trust_remote_code: null
+    metadata:
+      stage: 2
+    name: inference-perf
+  model:
+    name: unknown
+version: '0.1'
