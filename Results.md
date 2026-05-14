@@ -34,7 +34,8 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 
 ![alt text](4.1/precise-prefix-sarvam-30b-mixed/benchmark/comparison_rates_5_to_200_mixed.png)
 
-**llm-d brings down TTFT by 2.85-4.54× , increases throughput by close to 3x at rate=200.**
+**llm-d brings down TTFT by 2.85-4.54× , increases throughput by close to 3x at rate=200.
+llm-d wins biggest in the mixed pool — round-robin is most punished by heterogeneous capacity (slow NVIDIA pods drag k8s peak down to 10K), and llm-d's prefix-aware routing avoids this trap.**
 
 # NVIDIA + AMD + Gaudi
 
