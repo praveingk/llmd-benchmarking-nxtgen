@@ -1,0 +1,112 @@
+environments:
+  istio: &I
+    values:
+      - prereq/gateway-provider/common-configurations/istio.yaml
+  default:
+    <<: *I
+
+---
+
+{{- $ns := .Namespace | default "llm-d-granite-mixed-kv" -}}
+{{- $rn := (env "RELEASE_NAME_POSTFIX") | default "granite-mixed" -}}
+
+repositories:
+  - name: llm-d-modelservice
+    url: https://llm-d-incubation.github.io/llm-d-modelservice/
+  - name: llm-d-infra
+    url: https://llm-d-incubation.github.io/llm-d-infra/
+
+releases:
+  - name: {{ printf "infra-%s" $rn | quote }}
+    namespace: {{ $ns }}
+    chart: llm-d-infra/llm-d-infra
+    version: v1.4.0
+    installed: true
+    labels:
+      type: infrastructure
+      kind: inference-stack
+    values:
+      - gateway:
+          {{ .Environment.Values.gateway | toYaml | nindent 10 }}
+
+  - name: {{ printf "gaie-%s" $rn | quote }}
+    namespace: {{ $ns }}
+    chart: oci://registry.k8s.io/gateway-api-inference-extension/charts/inferencepool
+    version: v1.4.0
+    installed: true
+    needs:
+      - {{ printf "infra-%s" $rn | quote }}
+    values:
+      - gaie-kv-events/values.yaml
+      - provider:
+          name: {{ .Environment.Values.provider.name }}
+          istio:
+            {{ .Environment.Values.provider.istio | toYaml | nindent 12 }}
+      - provider:
+          istio:
+            destinationRule:
+              host: {{ printf "gaie-%s-epp.%s.svc.cluster.local" $rn $ns | quote }}
+    labels:
+      kind: inference-stack
+
+  # NVIDIA decode pods (4 replicas, H100-NVL).
+  - name: {{ printf "ms-%s-nvidia" $rn | quote }}
+    namespace: {{ $ns }}
+    chart: llm-d-modelservice/llm-d-modelservice
+    version: v0.4.9
+    installed: true
+    needs:
+      - {{ printf "infra-%s" $rn | quote }}
+      - {{ printf "gaie-%s" $rn | quote }}
+    values:
+      - ms-nvidia/values.yaml
+      - routing:
+          {{ .Environment.Values.routing | toYaml | nindent 10 }}
+    set:
+      - name: "decode.containers[0].env[0].value"
+        value: {{ printf "%s" $rn | quote }}
+    labels:
+      kind: inference-stack
+      vendor: nvidia
+
+  # AMD decode pods (8 replicas, MI325X). Currently disabled — flip
+  # `installed: true` (or run `helmfile apply -l vendor=amd`) once AMD nodes
+  # are allocated to the cluster.
+  - name: {{ printf "ms-%s-amd" $rn | quote }}
+    namespace: {{ $ns }}
+    chart: llm-d-modelservice/llm-d-modelservice
+    version: v0.4.9
+    installed: {{ env "DEPLOY_AMD" | default "false" }}
+    needs:
+      - {{ printf "infra-%s" $rn | quote }}
+      - {{ printf "gaie-%s" $rn | quote }}
+    values:
+      - ms-amd/values.yaml
+      - routing:
+          {{ .Environment.Values.routing | toYaml | nindent 10 }}
+    set:
+      - name: "decode.containers[0].env[0].value"
+        value: {{ printf "%s" $rn | quote }}
+    labels:
+      kind: inference-stack
+      vendor: amd
+
+  # Gaudi3 decode pods (8 replicas, single Gaudi3 node).
+  - name: {{ printf "ms-%s-gaudi" $rn | quote }}
+    namespace: {{ $ns }}
+    chart: llm-d-modelservice/llm-d-modelservice
+    version: v0.4.9
+    installed: true
+    needs:
+      - {{ printf "infra-%s" $rn | quote }}
+      - {{ printf "gaie-%s" $rn | quote }}
+    values:
+      - ms-gaudi/values.yaml
+      - routing:
+          {{ .Environment.Values.routing | toYaml | nindent 10 }}
+    set:
+      - name: "decode.containers[0].env[0].value"
+        value: {{ printf "%s" $rn | quote }}
+    labels:
+      kind: inference-stack
+      vendor: gaudi

@@ -42,10 +42,14 @@
 **llm-d brings down TTFT by 2.85-4.54× , increases throughput by close to 3x at rate=200.
 llm-d wins biggest in the mixed pool — round-robin is most punished by heterogeneous capacity (slow NVIDIA pods drag k8s peak down to 10K), and llm-d's prefix-aware routing avoids this trap.**
 
-# NVIDIA + AMD + Gaudi
+# NVIDIA + AMD + Gaudi - 20 GPUs (Prefix-caching)
 
-## Granite-8b ✅ 
-Not yet finalized.
+## Granite-8b ✅
+![alt text](4.2/mixed-3vendor-granite/benchmark/comparison_3vendor.png)
+
+**Highlight: With the optimized Gaudi config (block-size=128, max-num-seqs=256), the 20-pod 3-vendor pool delivers 14.2K out tok/s peak with llm-d vs 9.6K with k8s round-robin. k8s saturates at rate 25 and *declines* to 7.5K at rate 85 (queue depth dominates) — llm-d delivers +91% throughput at the same load. TTFT at rate 85: llm-d 6.8s, k8s 36.4s (5.4× better). 2× improvement over the original un-tuned 4.2 result (7K) purely from the Gaudi tuning; Gaudi is no longer the drag in the heterogeneous pool.**
+
+### Original (un-tuned Gaudi) for reference
 ![alt text](4.2/benchmark/comparison_3vendor_pool.png)
 
 # NVIDIA - 4 GPUs (PD Disaggregation)

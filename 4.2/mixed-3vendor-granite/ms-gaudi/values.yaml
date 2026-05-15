@@ -1,0 +1,150 @@
+multinode: false
+
+modelArtifacts:
+  uri: "hf://ibm-granite/granite-4.1-8b"
+  name: "ibm-granite/granite-4.1-8b"
+  size: 40Gi
+  authSecretName: "llm-d-hf-token"
+  labels:
+    llm-d.ai/inference-serving: "true"
+    llm-d.ai/guide: "precise-prefix-cache-aware"
+    llm-d.ai/accelerator-variant: "hpu"
+    llm-d.ai/accelerator-vendor: "intel-habana"
+    llm-d.ai/model: "granite-4.1-8b"
+
+routing:
+  proxy:
+    enabled: false
+
+accelerator:
+  type: intel-gaudi
+
+decode:
+  create: true
+  parallelism:
+    tensor: 1
+    data: 1
+  replicas: 8
+  nodeSelector:
+    habana.ai/device.type: GAUDI3
+  monitoring:
+    podmonitor:
+      enabled: false
+  containers:
+    - name: "vllm"
+      image: ghcr.io/llm-d/llm-d-hpu:v0.7.0
+      modelCommand: custom
+      command:
+        - /bin/sh
+        - "-c"
+      args:
+        - |
+          set -x
+          # v0.7.0 uses exponential bucketing (driven by engine flags below).
+          # Smoke-validated config: 107s warmup, 70 GiB KV, 3 GiB graph mem.
+          # Workload target: ~7.2k ISL + 1k OSL = ~8.2k context.
+          exec vllm serve ibm-granite/granite-4.1-8b \
+            --host 0.0.0.0 \
+            --port 8000 \
+            --tensor-parallel-size 1 \
+            --block-size 128 \
+            --dtype bfloat16 \
+            --max-model-len 9216 \
+            --max-num-seqs 256 \
+            --max-num-batched-tokens 16384 \
+            --gpu-memory-utilization 0.75 \
+            --kv-events-config "{\"enable_kv_cache_events\":true,\"publisher\":\"zmq\",\"endpoint\":\"tcp://gaie-${GAIE_RELEASE_NAME_POSTFIX}-epp.${NAMESPACE}.svc.cluster.local:5557\",\"topic\":\"kv@${POD_IP}:8000@ibm-granite/granite-4.1-8b\"}"
+      env:
+        - name: GAIE_RELEASE_NAME_POSTFIX
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: HOME
+          value: /tmp
+        - name: HF_HOME
+          value: /root/.cache/huggingface
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: PT_HPU_LAZY_MODE
+          value: "1"
+        - name: PT_HPU_ENABLE_LAZY_COLLECTIVES
+          value: "true"
+        # vllm_gaudi can't auto-detect Habana SDK version when HOME is locked down
+        # (config validator returns None and regex match crashes). Pin matches v0.7.0 SDK.
+        - name: VLLM_BUILD
+          value: "1.23.0.695"
+        # Graph reservation; smoke run used 3 GiB of 12 GiB reserve, so 0.15 is comfortable.
+        - name: VLLM_GRAPH_RESERVED_MEM
+          value: "0.15"
+        - name: VLLM_LOGGING_LEVEL
+          value: INFO
+      ports:
+        - containerPort: 8000
+          name: vllm
+          protocol: TCP
+      resources:
+        limits:
+          cpu: "16"
+          memory: 96Gi
+        requests:
+          cpu: "8"
+          memory: 48Gi
+      # hostPath HF cache pre-populated on the gaudi node (downloader-gaudi.yaml).
+      # Avoids 8 concurrent HF downloads at pod startup.
+      mountModelVolume: false
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      volumeMounts:
+        - name: metrics-volume
+          mountPath: /.config
+        - name: shm
+          mountPath: /dev/shm
+        - name: habana-logs
+          mountPath: /var/log/habana_logs
+        - name: hf-cache
+          mountPath: /root/.cache/huggingface
+      startupProbe:
+        httpGet:
+          path: /v1/models
+          port: vllm
+        initialDelaySeconds: 60
+        periodSeconds: 30
+        timeoutSeconds: 10
+        failureThreshold: 120
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: vllm
+        periodSeconds: 30
+        timeoutSeconds: 10
+        failureThreshold: 20
+      readinessProbe:
+        httpGet:
+          path: /v1/models
+          port: vllm
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 6
+  volumes:
+    - name: metrics-volume
+      emptyDir: {}
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 20Gi
+    - name: habana-logs
+      emptyDir: {}
+    - name: hf-cache
+      hostPath:
+        path: /var/lib/llm-d-hf-cache
+        type: Directory
+
+prefill:
+  create: false

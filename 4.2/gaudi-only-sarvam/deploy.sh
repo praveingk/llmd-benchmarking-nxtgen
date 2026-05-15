@@ -1,0 +1,194 @@
+#!/usr/bin/env bash
+#
+# Deploy / teardown the precise-prefix-cache-aware stack for
+# sarvamai/sarvam-30b on 8 Gaudi3 cards using hostPath HF cache pre-populated
+# by downloader.yaml on the gaudi node.
+#
+# Usage:
+#   ./deploy.sh deploy       Install (idempotent)
+#   ./deploy.sh destroy      Remove releases (keep namespace + HF token)
+#   ./deploy.sh redeploy     destroy + deploy
+#   ./deploy.sh status       Pod / service / release listing
+#   ./deploy.sh test         Sanity completion via the EPP service
+#
+# Env vars:
+#   NAMESPACE                (default: llm-d-sarvam-gaudi)
+#   HF_TOKEN                 Required on first deploy if no existing secret
+#   SOURCE_NAMESPACE         Namespace to copy llm-d-hf-token from (default: llm-d-sarvam-kv)
+
+set -euo pipefail
+
+NAMESPACE="${NAMESPACE:-llm-d-sarvam-gaudi}"
+SOURCE_NAMESPACE="${SOURCE_NAMESPACE:-llm-d-sarvam-kv}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export HELMFILE_DIR="$SCRIPT_DIR"
+
+MS_RELEASE="ms-sarvam-gaudi"
+EPP_RELEASE="precise-sarvam-gaudi"
+EPP_SVC="${EPP_RELEASE}-epp"
+ZMQ_ALIAS_SVC="gaie-sarvam-gaudi-epp"
+
+log() { printf '\033[1;34m[%s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
+err() { printf '\033[1;31m[ERR]\033[0m %s\n' "$*" >&2; exit 1; }
+
+check_prereqs() {
+    for cmd in kubectl helm helmfile jq curl; do
+        command -v "$cmd" >/dev/null || err "missing required command: $cmd"
+    done
+    helm plugin list 2>/dev/null | grep -q '^diff' || {
+        log "Installing helm-diff plugin..."
+        helm plugin install https://github.com/databus23/helm-diff --verify=false
+    }
+}
+
+ensure_namespace_and_token() {
+    kubectl get ns "$NAMESPACE" >/dev/null 2>&1 || {
+        log "Creating namespace $NAMESPACE"
+        kubectl create namespace "$NAMESPACE"
+    }
+    kubectl get secret llm-d-hf-token -n "$NAMESPACE" >/dev/null 2>&1 && return 0
+
+    if [[ -n "${HF_TOKEN:-}" ]]; then
+        log "Creating llm-d-hf-token secret from HF_TOKEN env"
+        kubectl create secret generic llm-d-hf-token -n "$NAMESPACE" \
+            --from-literal=HF_TOKEN="$HF_TOKEN"
+        return 0
+    fi
+
+    if kubectl get secret llm-d-hf-token -n "$SOURCE_NAMESPACE" >/dev/null 2>&1; then
+        log "Copying llm-d-hf-token secret from $SOURCE_NAMESPACE"
+        kubectl get secret llm-d-hf-token -n "$SOURCE_NAMESPACE" -o yaml \
+            | sed "s/namespace: $SOURCE_NAMESPACE/namespace: $NAMESPACE/" \
+            | kubectl apply -n "$NAMESPACE" -f -
+        return 0
+    fi
+
+    err "HF_TOKEN env not set and no llm-d-hf-token secret found in $SOURCE_NAMESPACE"
+}
+
+deploy_vllm() {
+    log "Installing $MS_RELEASE (vllm decode pods x 8 on Gaudi3)"
+    cd "$HELMFILE_DIR"
+    RELEASE_NAME_POSTFIX=sarvam-gaudi helmfile -e istio -l "name=$MS_RELEASE" apply -n "$NAMESPACE" --suppress-secrets >/dev/null
+}
+
+deploy_infra_and_gaie() {
+    log "Installing infra + gaie releases"
+    cd "$HELMFILE_DIR"
+    RELEASE_NAME_POSTFIX=sarvam-gaudi helmfile -e istio -l 'name=infra-sarvam-gaudi' apply -n "$NAMESPACE" --suppress-secrets >/dev/null
+    RELEASE_NAME_POSTFIX=sarvam-gaudi helmfile -e istio -l 'name=gaie-sarvam-gaudi' apply -n "$NAMESPACE" --suppress-secrets >/dev/null
+}
+
+deploy_epp() {
+    log "Installing $EPP_RELEASE (standalone EPP chart)"
+    helm upgrade --install "$EPP_RELEASE" \
+        oci://registry.k8s.io/gateway-api-inference-extension/charts/standalone \
+        --version v1.5.0 \
+        -n "$NAMESPACE" \
+        -f "$SCRIPT_DIR/standalone-values/values.yaml" >/dev/null
+}
+
+deploy_zmq_alias() {
+    log "Creating ExternalName service alias $ZMQ_ALIAS_SVC -> $EPP_SVC"
+    cat <<YAML | kubectl apply -n "$NAMESPACE" -f - >/dev/null
+apiVersion: v1
+kind: Service
+metadata:
+  name: $ZMQ_ALIAS_SVC
+spec:
+  type: ExternalName
+  externalName: $EPP_SVC.$NAMESPACE.svc.cluster.local
+YAML
+}
+
+wait_for_pods() {
+    log "Waiting for EPP rollout (5 min)"
+    kubectl rollout status -n "$NAMESPACE" deploy/"$EPP_SVC" --timeout=300s || true
+
+    log "Waiting for 8/8 decode pods Ready (up to 60 min for first pull + warmup)"
+    local deadline=$(( $(date +%s) + 3600 ))
+    while true; do
+        local ready
+        ready=$(kubectl get pods -n "$NAMESPACE" -l llm-d.ai/role=decode --no-headers 2>/dev/null \
+                | awk '$2=="1/1"' | wc -l | tr -d ' ')
+        echo "  decode ready=$ready/8"
+        [[ "$ready" == "8" ]] && break
+        [[ $(date +%s) -gt $deadline ]] && err "timeout waiting for decode pods"
+        sleep 30
+    done
+}
+
+apply_httproute() {
+    log "Applying httproute (decode-backend Service + InferencePool v1alpha2 + HTTPRoute)"
+    kubectl apply -f "$SCRIPT_DIR/httproute.yaml" -n "$NAMESPACE" >/dev/null
+}
+
+run_test() {
+    log "Port-forwarding EPP service and sending 3 sanity completions"
+    pkill -f "port-forward.*$NAMESPACE" 2>/dev/null || true
+    sleep 1
+    kubectl port-forward -n "$NAMESPACE" "service/$EPP_SVC" 8000:8081 >/tmp/pf-$$.log 2>&1 &
+    local pf=$!
+    trap "kill $pf 2>/dev/null || true" EXIT
+    sleep 3
+
+    local body
+    body=$(jq -n '{model:"ibm-granite/granite-4.1-8b",prompt:"What is Kubernetes?",max_tokens:20,temperature:0}')
+    for i in 1 2 3; do
+        printf '  call %d: ' "$i"
+        curl -s -m 60 http://localhost:8000/v1/completions \
+            -H "Content-Type: application/json" -d "$body" \
+            -o /dev/null -w "HTTP=%{http_code} time=%{time_total}s\n"
+        sleep 2
+    done
+
+    { kill $pf; wait $pf; } 2>/dev/null || true
+    trap - EXIT
+}
+
+cmd_deploy() {
+    check_prereqs
+    ensure_namespace_and_token
+    deploy_infra_and_gaie
+    deploy_vllm
+    deploy_epp
+    deploy_zmq_alias
+    apply_httproute
+    wait_for_pods
+    log "Deployment complete. Run '$0 test' to verify."
+}
+
+cmd_destroy() {
+    log "Deleting helm releases in $NAMESPACE"
+    helm uninstall "$EPP_RELEASE" -n "$NAMESPACE" 2>/dev/null || true
+    (cd "$HELMFILE_DIR" && RELEASE_NAME_POSTFIX=sarvam-gaudi helmfile -e istio destroy -n "$NAMESPACE" 2>/dev/null) || true
+
+    log "Deleting ExternalName + httproute artifacts"
+    kubectl delete -f "$SCRIPT_DIR/httproute.yaml" -n "$NAMESPACE" --ignore-not-found 2>/dev/null || true
+    kubectl delete svc "$ZMQ_ALIAS_SVC" -n "$NAMESPACE" --ignore-not-found
+
+    log "Force-deleting any lingering decode pods"
+    kubectl delete pods -n "$NAMESPACE" -l llm-d.ai/role=decode --force --grace-period=0 2>/dev/null || true
+
+    log "Namespace + HF token retained. Delete namespace manually if desired:"
+    echo "    kubectl delete namespace $NAMESPACE"
+}
+
+cmd_status() {
+    log "Namespace: $NAMESPACE"
+    kubectl get pods,svc,inferencepool -n "$NAMESPACE" 2>&1 || true
+    echo
+    helm list -n "$NAMESPACE" 2>&1 || true
+}
+
+case "${1:-}" in
+    deploy)   cmd_deploy   ;;
+    destroy)  cmd_destroy  ;;
+    redeploy) cmd_destroy; cmd_deploy ;;
+    status)   cmd_status   ;;
+    test)     run_test     ;;
+    *)
+        sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+        exit 1
+        ;;
+esac

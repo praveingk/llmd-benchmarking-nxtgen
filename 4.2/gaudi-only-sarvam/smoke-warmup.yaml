@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sarvam-vllm-smoke-warmup
+  namespace: llm-d-sarvam-gaudi
+  labels:
+    app: sarvam-vllm-smoke-warmup
+spec:
+  nodeSelector:
+    habana.ai/device.type: GAUDI3
+  restartPolicy: Never
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  containers:
+    - name: vllm
+      image: ghcr.io/llm-d/llm-d-hpu:v0.7.0
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          set -x
+          echo "=== HF cache contents ==="
+          ls /root/.cache/huggingface/hub/models--sarvamai--sarvam-30b/snapshots/ 2>&1 || true
+
+          echo "=== Upgrading transformers (image ships 4.57.6, sarvam-30b MoE needs >=5.0.0) ==="
+          pip install --quiet --no-cache-dir --upgrade 'transformers>=5.0.0'
+          python3 -c "import transformers; print('transformers', transformers.__version__)"
+
+          echo "=== Applying sarvam vllm hotpatch (drop-in sarvam.py + registry edit) ==="
+          VLLM_DIR=$(python3 -c "import vllm,os; print(os.path.dirname(vllm.__file__))")
+          REG="$VLLM_DIR/model_executor/models/registry.py"
+          SARVAM="$VLLM_DIR/model_executor/models/sarvam.py"
+          # 1) sarvam.py — fetch from HF (sarvam team's vllm-native impl)
+          if [ ! -f "$SARVAM" ]; then
+            curl -sSL -H "Authorization: Bearer $HF_TOKEN" \
+              https://huggingface.co/sarvamai/sarvam-30b/resolve/main/sarvam.py \
+              -o "$SARVAM"
+            ls -la "$SARVAM"
+          fi
+          # 2) registry — add SarvamMoEForCausalLM and SarvamMLAForCausalLM if missing
+          if grep -q "SarvamMoEForCausalLM" "$REG"; then
+            echo "registry already patched"
+          else
+            sed -i 's|^_TEXT_GENERATION_MODELS = {$|&\n    "SarvamMoEForCausalLM": ("sarvam", "SarvamMoEForCausalLM"),\n    "SarvamMLAForCausalLM": ("sarvam", "SarvamMLAForCausalLM"),|' "$REG"
+            grep -c SarvamMoEForCausalLM "$REG" || { echo "patch FAILED"; exit 1; }
+          fi
+
+          echo "=== HBM info ==="
+          hl-smi 2>&1 | head -30 || true
+          echo "=== Start vllm sarvam-30b (warmup ENABLED, native sarvam class) ==="
+          exec vllm serve sarvamai/sarvam-30b \
+            --host 0.0.0.0 \
+            --port 8000 \
+            --tensor-parallel-size 1 \
+            --block-size 128 \
+            --dtype bfloat16 \
+            --trust-remote-code \
+            --max-model-len 9216 \
+            --max-num-seqs 64 \
+            --max-num-batched-tokens 16384 \
+            --gpu-memory-utilization 0.85
+      env:
+        - { name: POD_IP, valueFrom: { fieldRef: { fieldPath: status.podIP } } }
+        - { name: HF_TOKEN, valueFrom: { secretKeyRef: { name: llm-d-hf-token, key: HF_TOKEN } } }
+        - { name: HOME, value: /tmp }
+        - { name: HF_HOME, value: /root/.cache/huggingface }
+        - { name: HF_HUB_OFFLINE, value: "1" }
+        - { name: PT_HPU_LAZY_MODE, value: "1" }
+        - { name: PT_HPU_ENABLE_LAZY_COLLECTIVES, value: "true" }
+        - { name: VLLM_BUILD, value: "1.23.0.695" }
+        - { name: VLLM_GRAPH_RESERVED_MEM, value: "0.15" }
+        - { name: VLLM_LOGGING_LEVEL, value: INFO }
+      resources:
+        limits:
+          habana.ai/gaudi: 1
+          cpu: "16"
+          memory: 96Gi
+        requests:
+          habana.ai/gaudi: 1
+          cpu: "8"
+          memory: 48Gi
+      ports:
+        - containerPort: 8000
+          name: vllm
+      volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+        - name: habana-logs
+          mountPath: /var/log/habana_logs
+        - name: hf-cache
+          mountPath: /root/.cache/huggingface
+      startupProbe:
+        httpGet: { path: /v1/models, port: vllm }
+        initialDelaySeconds: 60
+        periodSeconds: 30
+        timeoutSeconds: 10
+        failureThreshold: 200
+      readinessProbe:
+        httpGet: { path: /v1/models, port: vllm }
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 6
+  volumes:
+    - name: shm
+      emptyDir: { medium: Memory, sizeLimit: 20Gi }
+    - name: habana-logs
+      emptyDir: {}
+    - name: hf-cache
+      hostPath:
+        path: /var/lib/llm-d-hf-cache
+        type: Directory
