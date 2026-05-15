@@ -1,0 +1,231 @@
+metrics:
+  latency:
+    inter_token_latency:
+      max: 1.8814723524264991
+      mean: 0.21481990562980008
+      min: 5.405861884355545e-06
+      p0p1: 5.878973752260208e-06
+      p1: 6.669643335044384e-06
+      p10: 0.0316278925165534
+      p25: 0.1530828478280455
+      p5: 1.3506505638360977e-05
+      p50: 0.2315981718711555
+      p75: 0.24553185980767012
+      p90: 0.2666727718897164
+      p95: 0.29427202022634447
+      p99: 1.319977775774896
+      p99p9: 1.5904561080597455
+      units: s/token
+    normalized_time_per_output_token:
+      max: 0.2700531199909709
+      mean: 0.2224967968281247
+      min: 0.1561373391198946
+      p0p1: 0.1676137201461713
+      p1: 0.18458596030984636
+      p10: 0.2048435869839089
+      p25: 0.21326940861710694
+      p5: 0.197955980597552
+      p50: 0.22102413989089503
+      p75: 0.2331076839812427
+      p90: 0.23922407302230894
+      p95: 0.24516677814494664
+      p99: 0.2683016861585732
+      p99p9: 0.2695873812154013
+      units: s/token
+    request_latency:
+      max: 268.3777969572693
+      mean: 222.07921645349543
+      min: 155.82506444165483
+      p0p1: 167.2187259502234
+      p1: 183.48206381642726
+      p10: 204.2581643974874
+      p25: 212.32490428723395
+      p5: 197.6671509404201
+      p50: 220.70124173676595
+      p75: 233.08920257387217
+      p90: 238.20614207629114
+      p95: 244.35736932326105
+      p99: 267.2387191811902
+      p99p9: 268.36399253939277
+      units: s
+    time_per_output_token:
+      max: 0.24525217903312296
+      mean: 0.21481895720622196
+      min: 0.06783747004112228
+      p0p1: 0.0678383222603756
+      p1: 0.08309687728106423
+      p10: 0.19652698552096262
+      p25: 0.21038450945622753
+      p5: 0.1828803165228339
+      p50: 0.21931627543712967
+      p75: 0.22914815217047
+      p90: 0.23624379462641665
+      p95: 0.24080359102841467
+      p99: 0.2437664222036302
+      p99p9: 0.2452131964440802
+      units: s/token
+    time_to_first_token:
+      max: 190.6945284837857
+      mean: 7.223944591776468
+      min: 0.18263490917161107
+      p0p1: 0.19691469584358856
+      p1: 0.2752568533364683
+      p10: 0.40070010134950285
+      p25: 0.5364222121424973
+      p5: 0.344323827791959
+      p50: 0.797641453333199
+      p75: 1.3848459358559921
+      p90: 2.3959387754555816
+      p95: 3.5136294917203483
+      p99: 174.56305973482785
+      p99p9: 187.8420794565414
+      units: s
+  requests:
+    failures: 0
+    input_length:
+      max: 7621.0
+      mean: 7544.682
+      min: 7478.0
+      p0p1: 7478.499
+      p1: 7486.99
+      p10: 7513.0
+      p25: 7529.0
+      p5: 7504.95
+      p50: 7544.0
+      p75: 7560.25
+      p90: 7577.0
+      p95: 7586.0
+      p99: 7602.02
+      p99p9: 7614.513000000001
+      units: count
+    output_length:
+      max: 1010.0
+      mean: 998.176
+      min: 888.0
+      p0p1: 912.95
+      p1: 988.98
+      p10: 994.0
+      p25: 997.0
+      p5: 993.0
+      p50: 998.0
+      p75: 1000.0
+      p90: 1003.0
+      p95: 1004.0
+      p99: 1007.0
+      p99p9: 1009.501
+      units: count
+    total: 500
+  throughput:
+    output_tokens_per_sec: 1579.682675353677
+    requests_per_sec: 1.5825692817235408
+    total_tokens_per_sec: 13519.664648926204
+  time:
+    duration: 48.987223798874766
+scenario:
+  load:
+    args:
+      api:
+        headers: null
+        streaming: true
+        type: completion
+      circuit_breakers: null
+      data:
+        input_distribution: null
+        output_distribution: null
+        path: null
+        shared_prefix:
+          enable_multi_turn_chat: false
+          num_unique_system_prompts: 150
+          num_users_per_system_prompt: 5
+          output_len: 1000
+          question_len: 1200
+          system_prompt_len: 6000
+        trace: null
+        type: shared_prefix
+      load:
+        circuit_breakers: []
+        interval: 1.0
+        lora_traffic_split: null
+        num_workers: 256
+        request_timeout: null
+        stages:
+        - concurrency_level: null
+          duration: 50
+          num_requests: null
+          rate: 10.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 3.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 8.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 15.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 25.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 35.0
+        - concurrency_level: null
+          duration: 30
+          num_requests: null
+          rate: 50.0
+        sweep: null
+        trace: null
+        type: poisson
+        worker_max_concurrency: 100
+        worker_max_tcp_connections: 2500
+      metrics: null
+      report:
+        prometheus:
+          per_stage: false
+          summary: true
+        request_lifecycle:
+          per_adapter: true
+          per_adapter_stage: false
+          per_request: true
+          per_stage: true
+          percentiles:
+          - 0.1
+          - 1.0
+          - 5.0
+          - 10.0
+          - 25.0
+          - 50.0
+          - 75.0
+          - 90.0
+          - 95.0
+          - 99.0
+          - 99.9
+          summary: true
+      server:
+        api_key: null
+        base_url: http://precise-granite-gaudi-epp.llm-d-granite-kv.svc.cluster.local:8081
+        cert_path: null
+        ignore_eos: true
+        key_path: null
+        model_name: ibm-granite/granite-4.1-8b
+        type: vllm
+      storage:
+        google_cloud_storage: null
+        local_storage:
+          path: /requests/inference-perf_1778767091_shared_prefix_llmd-gaudi-only-granite
+          report_file_prefix: null
+        simple_storage_service: null
+      tokenizer:
+        pretrained_model_name_or_path: ibm-granite/granite-4.1-8b
+        token: null
+        trust_remote_code: null
+    metadata:
+      stage: 0
+    name: inference-perf
+  model:
+    name: unknown
+version: '0.1'

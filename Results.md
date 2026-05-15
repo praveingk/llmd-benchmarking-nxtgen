@@ -22,6 +22,11 @@ Not yet finalized. We are trying decode-heavy workloads since AMD has larger mem
 
 **Highlight: While K8s throughput plateaus at 15-17 K tok/s, llm-d goes upto 29K tok/s, 85% higher throughput. TTFT-wise llm-d upto  5x faster for lower rates**
 
+# Gaudi - 8 GPUs (Prefix-caching)
+
+## Granite-8b ✅ 
+![alt text](4.2/gaudi-only/benchmark/comparison_gaudi_only.png)
+**At saturation (rate 25), llm-d delivers +34% throughput AND ~18× better TTFT vs plain k8s round-robin**
 # NVIDIA + AMD - 12 GPUs (Prefix-caching)
 
 ## Granite-8b ✅ 
