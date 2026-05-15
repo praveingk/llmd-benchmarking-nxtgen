@@ -48,6 +48,7 @@ decode:
       modelCommand: vllmServe
       args:
         - "--block-size=16"
+        - "--max-num-batched-tokens=2048"
         - "--kv-events-config"
         - |-
           {

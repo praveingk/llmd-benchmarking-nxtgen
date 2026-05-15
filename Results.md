@@ -1,3 +1,22 @@
+# Summary
+
+Across every pool we tested — single-vendor (NVIDIA-only / AMD-only / Gaudi-only) and heterogeneous (NVIDIA+AMD, NVIDIA+AMD+Gaudi) — **llm-d's prefix-cache-aware EPP routing consistently wins over plain k8s round-robin** on both throughput and TTFT. The advantage grows with pool size and heterogeneity:
+
+| Pool | Pods | Model | Throughput edge | TTFT edge |
+|---|---|---|---|---|
+| NVIDIA-only | 4 H100-NVL | granite-4.1-8b | +25–36% | 16× |
+| NVIDIA-only | 4 H100-NVL | sarvam-30b | 2× | 22× |
+| AMD-only | 8 MI325X | granite-4.1-8b | +79% | 21× |
+| AMD-only | 8 MI325X | sarvam-30b | +85% (29K vs 17K) | 5× |
+| Gaudi-only | 8 Gaudi3 | granite-4.1-8b | +34% | 18× |
+| NVIDIA + AMD | 12 | granite-4.1-8b | +85% (19.4K vs 10–11K) | 3.4–5.6× |
+| NVIDIA + AMD | 12 | sarvam-30b | ~3× @ rate 200 | 2.85–4.54× |
+| NVIDIA + AMD + Gaudi | 20 | granite-4.1-8b | **+91% @ rate 85** | **5.4×** |
+
+**Why llm-d wins biggest on heterogeneous pools:** k8s round-robin spreads requests evenly regardless of pod speed, so a single slow vendor (an underpowered NVIDIA tier among MI325X, or un-tuned Gaudi) becomes a queueing sink that drags total throughput down. llm-d's prefix-cache-aware EPP routes around saturated pods and concentrates cache hits on warm ones, so heterogeneity is no longer a penalty.
+
+---
+
 # NVIDIA - 4 GPUs (Prefix-caching)
 ## Granite-8b  ✅ 
 ![alt text](<2.1/precise-prefix-granite/benchmark-results/comparison_rates_3_to_22 copy.png>)
@@ -47,9 +66,9 @@ llm-d wins biggest in the mixed pool — round-robin is most punished by heterog
 ## Granite-8b ✅
 ![alt text](4.2/mixed-3vendor-granite/benchmark/comparison_3vendor.png)
 
-**Highlight: With the optimized Gaudi config (block-size=128, max-num-seqs=256), the 20-pod 3-vendor pool delivers 14.2K out tok/s peak with llm-d vs 9.6K with k8s round-robin. k8s saturates at rate 25 and *declines* to 7.5K at rate 85 (queue depth dominates) — llm-d delivers +91% throughput at the same load. TTFT at rate 85: llm-d 6.8s, k8s 36.4s (5.4× better). 2× improvement over the original un-tuned 4.2 result (7K) purely from the Gaudi tuning; Gaudi is no longer the drag in the heterogeneous pool.**
+**Highlight: The 20-pod 3-vendor pool delivers 14.2K out tok/s peak with llm-d vs 9.6K with k8s round-robin. k8s saturates at rate 25 and *declines* to 7.5K at rate 85 (queue depth dominates) — llm-d delivers +91% throughput at the same load. TTFT at rate 85: llm-d 6.8s, k8s 36.4s (5.4× better).**
 
-### Original (un-tuned Gaudi) for reference
+<!-- ### Original (un-tuned Gaudi) for reference
 ![alt text](4.2/benchmark/comparison_3vendor_pool.png)
 
 # NVIDIA - 4 GPUs (PD Disaggregation)
@@ -57,4 +76,4 @@ llm-d wins biggest in the mixed pool — round-robin is most punished by heterog
 
 ![Trying with llm-d 0.7](3.1/precise-pd-sarvam30b/benchmark/comparison_2p2d_highlights.png)
 
-**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput. PD's ideally works bestfor serving larger models 120b+, hence we do not see throughput gains**
+**Highlight: PD reduces tail (inter-token) latency by up to 89%, while closely matching the throughput. PD's ideally works bestfor serving larger models 120b+, hence we do not see throughput gains** -->

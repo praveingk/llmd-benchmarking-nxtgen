@@ -44,7 +44,7 @@ ax1.plot(rates, [r["llmd_ttft"] for r in rows], "o-", label="llm-d (approximate 
 ax1.plot(rates, [r["k8s_ttft"] for r in rows], "s-", label="plain k8s (round-robin)", linewidth=2, markersize=8)
 ax1.set_xlabel("Target QPS (requests/sec)")
 ax1.set_ylabel("Mean TTFT (seconds)")
-ax1.set_title("Time To First Token vs QPS\nsarvam-30b AMD-only (8×MI325X TP=1) — prefill-heavy (10k/1.2k/0.2k)")
+ax1.set_title("Time To First Token vs QPS\nsarvam-30b AMD-only (8×MI325X TP=1)")
 ax1.legend()
 ax1.grid(True, alpha=0.3)
 ax1.set_yscale("log")
@@ -53,7 +53,7 @@ ax2.plot(rates, [r["llmd_tok"] for r in rows], "o-", label="llm-d (approximate p
 ax2.plot(rates, [r["k8s_tok"] for r in rows], "s-", label="plain k8s (round-robin)", linewidth=2, markersize=8)
 ax2.set_xlabel("Target QPS (requests/sec)")
 ax2.set_ylabel("Output tokens/sec")
-ax2.set_title("Output Throughput vs QPS\nsarvam-30b AMD-only (8×MI325X TP=1) — prefill-heavy (10k/1.2k/0.2k)")
+ax2.set_title("Output Throughput vs QPS\nsarvam-30b AMD-only (8×MI325X TP=1)")
 ax2.legend()
 ax2.grid(True, alpha=0.3)
 
