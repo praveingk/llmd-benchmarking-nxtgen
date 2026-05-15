@@ -12,10 +12,10 @@
 
 # AMD - 8 GPUs (Prefix-caching)
 ## Granite-8b ✅ 
-Not yet finalized. We are trying decode-heavy workloads since AMD has larger memory, and is optimized for decode.
 
-![alt text](2.2/precise-prefix-granite-amd/benchmark/comparison_amd_only.png)
+![alt text](2.2/precise-prefix-granite-amd-fresh/benchmark/comparison_amd_fresh.png)
 
+**llm-d delivers up to 21× better TTFT and +79% throughput vs plain k8s round-robin on this AMD-only granite deployment**
 ## Sarvam-30b
 
 ![alt text](2.2/precise-prefix-sarvam-30b-amd/benchmark/comparison_rates_5_to_200_amd.png)

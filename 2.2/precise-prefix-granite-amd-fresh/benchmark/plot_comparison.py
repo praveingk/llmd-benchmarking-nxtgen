@@ -43,7 +43,7 @@ ax1.plot(rates, [r["k8s_ttft"] for r in rows], "s-",
          label="plain k8s (round-robin)", linewidth=2, markersize=8)
 ax1.set_xlabel("Target QPS (requests/sec)")
 ax1.set_ylabel("Mean TTFT (seconds)")
-ax1.set_title("Time To First Token vs QPS\nGranite-4.1-8B on 8×AMD MI325X (fresh deploy)")
+ax1.set_title("Time To First Token vs QPS\nGranite-4.1-8B on 8×AMD MI325X")
 ax1.legend()
 ax1.grid(True, alpha=0.3)
 ax1.set_yscale("log")
@@ -54,7 +54,7 @@ ax2.plot(rates, [r["k8s_tok"] for r in rows], "s-",
          label="plain k8s (round-robin)", linewidth=2, markersize=8)
 ax2.set_xlabel("Target QPS (requests/sec)")
 ax2.set_ylabel("Output tokens/sec")
-ax2.set_title("Output Throughput vs QPS\nGranite-4.1-8B on 8×AMD MI325X (fresh deploy)")
+ax2.set_title("Output Throughput vs QPS\nGranite-4.1-8B on 8×AMD MI325X")
 ax2.legend()
 ax2.grid(True, alpha=0.3)
 
