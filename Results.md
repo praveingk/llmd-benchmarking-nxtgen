@@ -1,6 +1,6 @@
 # Summary
 
-Across every pool we tested — single-vendor (NVIDIA-only / AMD-only / Gaudi-only) and heterogeneous (NVIDIA+AMD, NVIDIA+AMD+Gaudi) — **llm-d's prefix-cache-aware EPP routing consistently wins over plain k8s round-robin** on both throughput and TTFT. The advantage grows with pool size and heterogeneity:
+Across every pool we tested — single-vendor (NVIDIA-only / AMD-only / Gaudi-only) and heterogeneous (NVIDIA+AMD, NVIDIA+AMD+Gaudi) — **llm-d's prefix-cache-aware EPP routing consistently wins over plain k8s** on both throughput and TTFT. The advantage grows with pool size and heterogeneity:
 
 | Pool | Pods | Model | Throughput edge | TTFT edge |
 |---|---|---|---|---|
