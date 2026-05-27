@@ -1,0 +1,42 @@
+load:
+  type: poisson
+  stages:
+    - rate: 5
+      duration: 50
+    - rate: 3
+      duration: 30
+    - rate: 8
+      duration: 30
+    - rate: 12
+      duration: 30
+    - rate: 18
+      duration: 30
+    - rate: 25
+      duration: 30
+api:
+  type: completion
+  streaming: true
+server:
+  type: vllm
+  model_name: ibm-granite/granite-4.1-8b
+  base_url: http://precise-granite-mixed-epp.llm-d-granite-mixed-kv.svc.cluster.local:8081
+  ignore_eos: true
+tokenizer:
+  pretrained_model_name_or_path: ibm-granite/granite-4.1-8b
+data:
+  type: shared_prefix
+  shared_prefix:
+    num_groups: 150
+    num_prompts_per_group: 5
+    system_prompt_len: 800
+    question_len: 200
+    output_len: 4000
+    enable_multi_turn_chat: false
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+storage:
+  local_storage:
+    path: /requests/inference-perf_1778843651_shared_prefix_llmd-nvidia-decode-heavy

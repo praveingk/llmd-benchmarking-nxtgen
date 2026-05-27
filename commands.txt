@@ -1,0 +1,10 @@
+
+
+
+cd /Users/pravein/praveinResearch/llmd-benchmarking/4.1/precise-prefix-sarvam-30b-mixed/benchmark
+kubectl delete pod -n llm-d-sarvam-kv llmdbench-harness-launcher --grace-period=5 --ignore-not-found 2>&1 | tail -1
+rm -rf results-llmd-scaled
+nohup bash run_only.sh -c config-llmd-scaled.yaml -o $(pwd)/results-llmd-scaled > bench-llmd.log 2>&1 &
+disown
+echo "launched pid=$!"
+
