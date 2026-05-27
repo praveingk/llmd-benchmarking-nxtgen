@@ -1,0 +1,239 @@
+metrics:
+  latency:
+    inter_token_latency:
+      max: 1.233199369162321
+      mean: 0.1659395563607977
+      min: 5.305744707584381e-06
+      p0p1: 6.0442835092544556e-06
+      p1: 1.0243244469165804e-05
+      p10: 0.06262109894305468
+      p25: 0.11371627589687705
+      p5: 0.04165556188672781
+      p50: 0.17153001809492707
+      p75: 0.21364651713520288
+      p90: 0.24203738383948803
+      p95: 0.2652679099701345
+      p99: 0.41437157150357956
+      p99p9: 0.5514205935969972
+      units: s/token
+    normalized_time_per_output_token:
+      max: 0.2843588877730909
+      mean: 0.20271072669501483
+      min: 0.03147490630720905
+      p0p1: 0.037640277421584746
+      p1: 0.04876921352413441
+      p10: 0.09559433901225052
+      p25: 0.18537395810372762
+      p5: 0.07086292053628603
+      p50: 0.2252382685629253
+      p75: 0.24296453053123335
+      p90: 0.2537615547622911
+      p95: 0.2593749261263379
+      p99: 0.2649459120369621
+      p99p9: 0.267772497425079
+      units: s/token
+    request_latency:
+      max: 135.08094950811937
+      mean: 101.64452635502356
+      min: 15.86335277883336
+      p0p1: 18.857853816304356
+      p1: 24.455060448041184
+      p10: 47.88774184435606
+      p25: 92.9718089341186
+      p5: 35.57845359817147
+      p50: 112.8989845062606
+      p75: 121.8357863666024
+      p90: 127.22743451325223
+      p95: 130.03613611306065
+      p99: 132.8694219505694
+      p99p9: 133.92619231463317
+      units: s
+    time_per_output_token:
+      max: 0.23139437426999213
+      mean: 0.16569400934539594
+      min: 0.03206231441856097
+      p0p1: 0.03817100301583684
+      p1: 0.049304743005954055
+      p10: 0.09407743901498616
+      p25: 0.1416677990435345
+      p5: 0.0711753805301801
+      p50: 0.1750774344978854
+      p75: 0.1983759159874171
+      p90: 0.20920556952077896
+      p95: 0.2210968200848438
+      p99: 0.23073256197141484
+      p99p9: 0.2313874352568891
+      units: s/token
+    time_to_first_token:
+      max: 52.71049311803654
+      mean: 19.29321522057287
+      min: 0.06504229595884681
+      p0p1: 0.08175373050291092
+      p1: 0.10135143642313779
+      p10: 0.7402604399248959
+      p25: 7.9533537270035595
+      p5: 0.26043635713867846
+      p50: 17.728782375343144
+      p75: 29.88085550791584
+      p90: 40.68916764017193
+      p95: 44.081984918005766
+      p99: 49.88560780423694
+      p99p9: 52.44886230123137
+      units: s
+  requests:
+    failures: 1
+    input_length:
+      max: 8372.0
+      mean: 8304.44916101789
+      min: 8226.0
+      p0p1: 8228.994
+      p1: 8245.0
+      p10: 8277.0
+      p25: 8289.0
+      p5: 8269.0
+      p50: 8305.0
+      p75: 8320.0
+      p90: 8334.0
+      p95: 8340.0
+      p99: 8355.0
+      p99p9: 8370.0
+      units: count
+    output_length:
+      max: 516.0
+      mean: 501.42793643738196
+      min: 445.0
+      p0p1: 496.0
+      p1: 498.0
+      p10: 500.0
+      p25: 501.0
+      p5: 500.0
+      p50: 501.0
+      p75: 502.0
+      p90: 503.0
+      p95: 504.0
+      p99: 507.0
+      p99p9: 511.0020000000004
+      units: count
+    total: 9000
+  throughput:
+    output_tokens_per_sec: 25099.104298745126
+    requests_per_sec: 50.055257146366614
+    total_tokens_per_sec: 440780.44251242414
+  time:
+    duration: 59.99675356410444
+scenario:
+  load:
+    args:
+      api:
+        headers: null
+        streaming: true
+        type: completion
+      circuit_breakers: null
+      data:
+        input_distribution: null
+        output_distribution: null
+        path: null
+        shared_prefix:
+          enable_multi_turn_chat: false
+          num_unique_system_prompts: 32
+          num_users_per_system_prompt: 32
+          output_len: 500
+          question_len: 2000
+          system_prompt_len: 6000
+        trace: null
+        type: shared_prefix
+      load:
+        circuit_breakers: []
+        interval: 1.0
+        lora_traffic_split: null
+        num_workers: 256
+        request_timeout: null
+        stages:
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 1.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 5.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 10.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 25.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 50.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 75.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 100.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 125.0
+        - concurrency_level: null
+          duration: 60
+          num_requests: null
+          rate: 150.0
+        sweep: null
+        trace: null
+        type: constant
+        worker_max_concurrency: 100
+        worker_max_tcp_connections: 2500
+      metrics: null
+      report:
+        prometheus:
+          per_stage: false
+          summary: true
+        request_lifecycle:
+          per_adapter: true
+          per_adapter_stage: false
+          per_request: true
+          per_stage: true
+          percentiles:
+          - 0.1
+          - 1.0
+          - 5.0
+          - 10.0
+          - 25.0
+          - 50.0
+          - 75.0
+          - 90.0
+          - 95.0
+          - 99.0
+          - 99.9
+          summary: true
+      server:
+        api_key: null
+        base_url: http://baseline-svc.llm-d-pd-sarvam-amd.svc.cluster.local:8000
+        cert_path: null
+        ignore_eos: true
+        key_path: null
+        model_name: sarvamai/sarvam-30b
+        type: vllm
+      storage:
+        google_cloud_storage: null
+        local_storage:
+          path: /requests/inference-perf_1779190145_shared_prefix_synthetic_baseline-sarvam-1p4d-amd
+          report_file_prefix: null
+        simple_storage_service: null
+      tokenizer:
+        pretrained_model_name_or_path: sarvamai/sarvam-30b
+        token: null
+        trust_remote_code: null
+    metadata:
+      stage: 8
+    name: inference-perf
+  model:
+    name: unknown
+version: '0.1'

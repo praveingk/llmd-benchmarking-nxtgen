@@ -1,0 +1,75 @@
+endpoint:
+  stack_name: &stack_name llmd-pd-sarvam-4p4d-amd
+  model: &model sarvamai/sarvam-30b
+  namespace: &namespace llm-d-pd-sarvam-amd
+  base_url: &url http://infra-pd-inference-gateway-openshift-ai-inference.llm-d-pd-sarvam-amd.svc.cluster.local:80
+  hf_token_secret: llm-d-hf-token
+
+control:
+  work_dir: $HOME/llm-d-bench-work-pd-4p4d-amd-prefill-heavy
+  kubectl: kubectl
+
+harness:
+  name: &harness_name inference-perf
+  namespace: *namespace
+  parallelism: 1
+  wait_timeout: 6000
+  image: ghcr.io/llm-d/llm-d-benchmark:v0.5.2
+  results_pvc: ""
+
+env:
+  - name: RAYON_NUM_THREADS
+    value: "4"
+
+# Prefill-heavy workload (mirrors 2p2d-prefill-heavy / 1p4d-amd-prefill-heavy):
+# ISL=8K (6K shared + 2K unique), OSL=500. Inverted topology vs 1P4D:
+# 4 prefill TP=1 + 1 decode TP=4 on the single MI325X 8-GPU node.
+workload:
+  shared_prefix_synthetic:
+    load:
+      type: constant
+      stages:
+        - rate: 1
+          duration: 60
+        - rate: 5
+          duration: 60
+        - rate: 10
+          duration: 60
+        - rate: 25
+          duration: 60
+        - rate: 50
+          duration: 60
+        - rate: 75
+          duration: 60
+        - rate: 100
+          duration: 60
+        - rate: 125
+          duration: 60
+        - rate: 150
+          duration: 60
+    api:
+      type: completion
+      streaming: true
+    server:
+      type: vllm
+      model_name: *model
+      base_url: *url
+      ignore_eos: true
+    tokenizer:
+      pretrained_model_name_or_path: *model
+    data:
+      type: shared_prefix
+      shared_prefix:
+        num_groups: 32
+        num_prompts_per_group: 32
+        system_prompt_len: 6000
+        question_len: 2000
+        output_len: 500
+    report:
+      request_lifecycle:
+        summary: true
+        per_stage: true
+        per_request: true
+    storage:
+      local_storage:
+        path: /workspace

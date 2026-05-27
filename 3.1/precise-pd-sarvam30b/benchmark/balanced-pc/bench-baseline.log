@@ -1,483 +1,0 @@
-
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-📄 Reading configuration file config-baseline.yaml
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-🔎 Verifying output destination
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-ℹ️ Verifying local output destination '/Users/pravein/praveinResearch/llmd-benchmarking/3.1/precise-pd-sarvam30b/benchmark/balanced-pc/results-baseline'
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-ℹ️ Using endpoint_stack_name=baseline-sarvam on endpoint_namespace=llm-d-pd-sarvam running model=sarvamai/sarvam-30b at endpoint_base_url=http://baseline-svc.llm-d-pd-sarvam.svc.cluster.local:8000
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-ℹ️ Using harness_name=inference-perf, with _harness_pod_name=llmdbench-harness-launcher on harness_namespace=llm-d-pd-sarvam
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-🔧 Ensuring harness namespace is prepared
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-🔧 Creating ServiceAccount for metrics collection
-[01;33m------------------------------------------------------------
-[0mserviceaccount/llmdbench-harness-sa unchanged
-role.rbac.authorization.k8s.io/llmdbench-metrics-reader unchanged
-rolebinding.rbac.authorization.k8s.io/llmdbench-harness-metrics unchanged
-
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-✅ ServiceAccount and RBAC created
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-🔧 Verifying HF token secret llm-d-hf-token in namespace llm-d-pd-sarvam
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-ℹ️ Using HF token secret llm-d-hf-token
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:18 IST 2026 - run_only.sh
-🔍 Verifying model sarvamai/sarvam-30b on endpoint http://baseline-svc.llm-d-pd-sarvam.svc.cluster.local:8000/v1/completions using pod verify-model-1778599518
-[01;33m------------------------------------------------------------
-[0mHTTP/1.1 200 OK
-date: Tue, 12 May 2026 15:25:25 GMT
-server: uvicorn
-content-length: 520
-content-type: application/json
-
-{"id":"cmpl-a69731f8b4c20cfa","object":"text_completion","created":1778599525,"model":"sarvamai/sarvam-30b","choices":[{"index":0,"text":"HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello সিপি CPP CPP CPP CPP","logprobs":null,"finish_reason":"length","stop_reason":null,"token_ids":null,"prompt_logprobs":null,"prompt_token_ids":null}],"service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":2,"total_tokens":18,"completion_tokens":16,"prompt_tokens_details":null},"kv_transfer_params":null}
-===> Tue May 12 20:55:28 IST 2026 - run_only.sh
-🔧 Preparing ConfigMap with workload profiles
-[01;33m------------------------------------------------------------
-[0mconfigmap "inference-perf-profiles" deleted
-configmap/inference-perf-profiles created
-
-===> Tue May 12 20:55:28 IST 2026 - run_only.sh
-ℹ️ ConfigMap 'inference-perf-profiles' created
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:55:28 IST 2026 - run_only.sh
-ℹ️ Creating harness pod llmdbench-harness-launcher
-[01;33m------------------------------------------------------------
-[0mpod "llmdbench-harness-launcher" deleted
-pod/llmdbench-harness-launcher created
-pod/llmdbench-harness-launcher condition met
-
-===> Tue May 12 20:56:22 IST 2026 - run_only.sh
-ℹ️ Harness pod llmdbench-harness-launcher started
-[01;33m------------------------------------------------------------
-[0mName:             llmdbench-harness-launcher
-Namespace:        llm-d-pd-sarvam
-Priority:         0
-Service Account:  llmdbench-harness-sa
-Node:             sovereign-ai-stack-cl02-np-gaudi3-node-01/10.25.110.102
-Start Time:       Tue, 12 May 2026 20:56:00 +0530
-Labels:           app=llmdbench-harness-launcher
-Annotations:      k8s.ovn.org/pod-networks:
-                    {"default":{"ip_addresses":["10.131.1.157/23"],"mac_address":"0a:58:0a:83:01:9d","gateway_ips":["10.131.0.1"],"routes":[{"dest":"10.128.0....
-                  k8s.v1.cni.cncf.io/network-status:
-                    [{
-                        "name": "ovn-kubernetes",
-                        "interface": "eth0",
-                        "ips": [
-                            "10.131.1.157"
-                        ],
-                        "mac": "0a:58:0a:83:01:9d",
-                        "default": true,
-                        "dns": {}
-                    }]
-                  openshift.io/scc: anyuid
-                  security.openshift.io/validated-scc-subject-type: user
-Status:           Running
-IP:               10.131.1.157
-IPs:
-  IP:  10.131.1.157
-Containers:
-  harness:
-    Container ID:  cri-o://eea2f32661868912efb5564e9993c4d29f95d4c1dfcb346fa3958dce55841068
-    Image:         ghcr.io/llm-d/llm-d-benchmark:v0.5.2
-    Image ID:      ghcr.io/llm-d/llm-d-benchmark@sha256:2940ffd2104c9af5676552336ab36f23d62ce6a226dfeb3613d24faeab3e657c
-    Port:          <none>
-    Host Port:     <none>
-    Command:
-      sh
-      -c
-    Args:
-      sleep 1000000
-    State:          Running
-      Started:      Tue, 12 May 2026 20:56:22 +0530
-    Ready:          True
-    Restart Count:  0
-    Limits:
-      cpu:     16
-      memory:  32Gi
-    Requests:
-      cpu:     16
-      memory:  32Gi
-    Environment:
-      RAYON_NUM_THREADS:                            4
-      HF_TOKEN:                                     <set to the key 'HF_TOKEN' in secret 'llm-d-hf-token'>  Optional: false
-      LLMDBENCH_RUN_WORKSPACE_DIR:                  /workspace
-      LLMDBENCH_MAGIC_ENVAR:                        harness_pod
-      LLMDBENCH_HARNESS_NAME:                       inference-perf
-      LLMDBENCH_RUN_EXPERIMENT_RESULTS_DIR_PREFIX:  /requests
-      LLMDBENCH_RUN_DATASET_DIR:                    /workspace
-      LLMDBENCH_HARNESS_STACK_NAME:                 baseline-sarvam
-      LLMDBENCH_DESCRIPTION_TEXT:                   
-      LLMDBENCH_DESCRIPTION_KEYWORDS:               
-    Mounts:
-      /requests from results (rw)
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-jf5ls (ro)
-      /workspace/profiles/inference-perf from inference-perf-profiles (rw)
-Conditions:
-  Type                        Status
-  PodReadyToStartContainers   True 
-  Initialized                 True 
-  Ready                       True 
-  ContainersReady             True 
-  PodScheduled                True 
-Volumes:
-  results:
-    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
-    Medium:     
-    SizeLimit:  <unset>
-  inference-perf-profiles:
-    Type:      ConfigMap (a volume populated by a ConfigMap)
-    Name:      inference-perf-profiles
-    Optional:  false
-  kube-api-access-jf5ls:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    Optional:                false
-    DownwardAPI:             true
-    ConfigMapName:           openshift-service-ca.crt
-    Optional:                false
-QoS Class:                   Guaranteed
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/memory-pressure:NoSchedule op=Exists
-                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type    Reason          Age   From               Message
-  ----    ------          ----  ----               -------
-  Normal  Scheduled       22s   default-scheduler  Successfully assigned llm-d-pd-sarvam/llmdbench-harness-launcher to sovereign-ai-stack-cl02-np-gaudi3-node-01
-  Normal  AddedInterface  23s   multus             Add eth0 [10.131.1.157/23] from ovn-kubernetes
-  Normal  Pulling         23s   kubelet            Pulling image "ghcr.io/llm-d/llm-d-benchmark:v0.5.2"
-  Normal  Pulled          1s    kubelet            Successfully pulled image "ghcr.io/llm-d/llm-d-benchmark:v0.5.2" in 21.232s (21.232s including waiting). Image size: 4939320191 bytes.
-  Normal  Created         1s    kubelet            Created container: harness
-  Normal  Started         1s    kubelet            Started container harness
-
-===> Tue May 12 20:56:23 IST 2026 - run_only.sh
-ℹ️
-  Running benchmark with Experiment ID 1778599518 (repeat=1).
-  Results will be stored in PVC .
-
-  Note:
-    Benchmark will continue to run even on time-out or connection failure.
-    Can follow progress by checking the logs (kubectl logs -f llmdbench-harness-launcher -n llm-d-pd-sarvam).
-
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:56:23 IST 2026 - run_only.sh
-Workloads in config-baseline.yaml are shared_prefix_synthetic
-[01;33m------------------------------------------------------------
-[0m
-===> Tue May 12 20:56:23 IST 2026 - run_only.sh
-ℹ️ Running benchmark with workload shared_prefix_synthetic (experiment_id=1778599518_shared_prefix_synthetic).
-[01;33m------------------------------------------------------------
-[0mLLMDBENCH_CONTROL_WORK_DIR=/requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-LLMDBENCH_DESCRIPTION_KEYWORDS=
-LLMDBENCH_DESCRIPTION_TEXT=
-LLMDBENCH_HARNESS_GIT_BRANCH=main
-LLMDBENCH_HARNESS_GIT_REPO=https://github.com/kubernetes-sigs/inference-perf.git
-LLMDBENCH_HARNESS_NAME=inference-perf
-LLMDBENCH_HARNESS_STACK_NAME=baseline-sarvam
-LLMDBENCH_MAGIC_ENVAR=harness_pod
-LLMDBENCH_RUN_DATASET_DIR=/workspace
-LLMDBENCH_RUN_EXPERIMENT_ANALYZER=inference-perf-analyze_results.sh
-LLMDBENCH_RUN_EXPERIMENT_HARNESS=inference-perf-llm-d-benchmark.sh
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_DIR=inference-perf
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_LOADGEN_EC=1
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_MAX_TRIES=3
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_NAME_AUTO=0
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_REPORT_EC=1
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_WORKLOAD_AUTO=0
-LLMDBENCH_RUN_EXPERIMENT_HARNESS_WORKLOAD_NAME=shared_prefix_synthetic.yaml
-LLMDBENCH_RUN_EXPERIMENT_ID=1778599518_shared_prefix_synthetic
-LLMDBENCH_RUN_EXPERIMENT_RESULTS_DIR=/requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-LLMDBENCH_RUN_EXPERIMENT_RESULTS_DIR_PREFIX=/requests
-LLMDBENCH_RUN_EXPERIMENT_RESULTS_DIR_SUFFIX=inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-LLMDBENCH_RUN_WORKSPACE_DIR=/workspace
-Running harness: /usr/local/bin/inference-perf-llm-d-benchmark.sh
-Using experiment result dir: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-2026-05-12 15:26:28,542 - inference_perf.config - INFO - Using configuration from: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/shared_prefix_synthetic.yaml
-2026-05-12 15:26:28,550 - inference_perf.config - INFO - Benchmarking with the following config:
-
-api:
-  type: completion
-  streaming: true
-  headers: null
-data:
-  type: shared_prefix
-  path: null
-  input_distribution: null
-  output_distribution: null
-  shared_prefix:
-    num_groups: 32
-    num_prompts_per_group: 32
-    system_prompt_len: 1500
-    question_len: 1500
-    output_len: 2000
-  trace: null
-load:
-  type: constant
-  interval: 1.0
-  stages:
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 1.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 2.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 3.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 5.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 7.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 10.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 12.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  - !!python/object:inference_perf.config.StandardLoadStage
-    __dict__:
-      rate: 15.0
-      duration: 60
-      num_requests: null
-      concurrency_level: null
-    __pydantic_extra__: null
-    __pydantic_fields_set__: !!set
-      duration: null
-      rate: null
-    __pydantic_private__: null
-  sweep: null
-  num_workers: 256
-  worker_max_concurrency: 100
-  worker_max_tcp_connections: 2500
-  trace: null
-  circuit_breakers: []
-  request_timeout: null
-  lora_traffic_split: null
-metrics: null
-report:
-  request_lifecycle:
-    summary: true
-    per_stage: true
-    per_request: true
-    per_adapter: true
-    per_adapter_stage: false
-    percentiles:
-    - 0.1
-    - 1.0
-    - 5.0
-    - 10.0
-    - 25.0
-    - 50.0
-    - 75.0
-    - 90.0
-    - 95.0
-    - 99.0
-    - 99.9
-  prometheus:
-    summary: true
-    per_stage: false
-storage:
-  local_storage:
-    path: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-    report_file_prefix: null
-  google_cloud_storage: null
-  simple_storage_service: null
-server:
-  type: vllm
-  model_name: sarvamai/sarvam-30b
-  base_url: http://baseline-svc.llm-d-pd-sarvam.svc.cluster.local:8000
-  ignore_eos: true
-tokenizer:
-  pretrained_model_name_or_path: sarvamai/sarvam-30b
-circuit_breakers: null
-
-
-2026-05-12 15:26:28,550 - inference_perf.client.filestorage.local - INFO - Report files will be stored at: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam
-2026-05-12 15:26:38,771 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run started
-Stage 0 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 0 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 0 progress:   3%|▎         | 0.03333333333333333/1.0 [00:11<00:29, 30.04s/it]Stage 0 progress:   7%|▋         | 0.06666666666666667/1.0 [00:15<01:17, 83.04s/it]Stage 0 progress:   8%|▊         | 0.08333333333333333/1.0 [00:16<01:09, 76.24s/it]Stage 0 progress:  12%|█▏        | 0.11666666666666667/1.0 [00:20<01:25, 96.30s/it]Stage 0 progress:  13%|█▎        | 0.13333333333333333/1.0 [00:22<01:28, 102.16s/it]Stage 0 progress:  15%|█▌        | 0.15/1.0 [00:24<01:30, 106.83s/it]               Stage 0 progress:  17%|█▋        | 0.16666666666666666/1.0 [00:26<01:32, 110.44s/it]Stage 0 progress:  20%|██        | 0.2/1.0 [00:27<01:00, 75.33s/it]                 Stage 0 progress:  22%|██▏       | 0.21666666666666667/1.0 [00:29<01:07, 85.99s/it]Stage 0 progress:  23%|██▎       | 0.23333333333333334/1.0 [00:33<01:35, 125.10s/it]Stage 0 progress:  28%|██▊       | 0.2833333333333333/1.0 [00:34<00:50, 70.39s/it]  Stage 0 progress:  32%|███▏      | 0.31666666666666665/1.0 [00:37<00:52, 76.94s/it]Stage 0 progress:  33%|███▎      | 0.3333333333333333/1.0 [00:38<00:49, 73.70s/it] Stage 0 progress:  35%|███▌      | 0.35/1.0 [00:39<00:45, 70.77s/it]              Stage 0 progress:  37%|███▋      | 0.36666666666666664/1.0 [00:41<00:52, 82.36s/it]Stage 0 progress:  38%|███▊      | 0.38333333333333336/1.0 [00:43<00:56, 91.84s/it]Stage 0 progress:  42%|████▏     | 0.4166666666666667/1.0 [00:44<00:38, 66.01s/it] Stage 0 progress:  43%|████▎     | 0.43333333333333335/1.0 [00:46<00:44, 78.44s/it]Stage 0 progress:  45%|████▌     | 0.45/1.0 [00:47<00:40, 73.90s/it]               Stage 0 progress:  50%|█████     | 0.5/1.0 [00:49<00:28, 56.48s/it] Stage 0 progress:  52%|█████▏    | 0.5166666666666667/1.0 [00:50<00:27, 57.19s/it]Stage 0 progress:  55%|█████▌    | 0.55/1.0 [00:52<00:26, 58.21s/it]              Stage 0 progress:  58%|█████▊    | 0.5833333333333334/1.0 [00:53<00:20, 48.65s/it]Stage 0 progress:  62%|██████▏   | 0.6166666666666667/1.0 [00:54<00:16, 42.56s/it]Stage 0 progress:  63%|██████▎   | 0.6333333333333333/1.0 [00:55<00:16, 45.87s/it]Stage 0 progress:  65%|██████▌   | 0.65/1.0 [00:58<00:26, 74.45s/it]              Stage 0 progress:  67%|██████▋   | 0.6666666666666666/1.0 [01:00<00:28, 85.10s/it]Stage 0 progress:  70%|███████   | 0.7/1.0 [01:01<00:18, 63.08s/it]               Stage 0 progress:  72%|███████▏  | 0.7166666666666667/1.0 [01:02<00:17, 62.41s/it]Stage 0 progress:  73%|███████▎  | 0.7333333333333333/1.0 [01:03<00:16, 61.84s/it]Stage 0 progress:  77%|███████▋  | 0.7666666666666667/1.0 [01:04<00:11, 48.89s/it]Stage 0 progress:  78%|███████▊  | 0.7833333333333333/1.0 [01:05<00:11, 51.41s/it]Stage 0 progress:  80%|████████  | 0.8/1.0 [01:08<00:16, 82.76s/it]               Stage 0 progress:  83%|████████▎ | 0.8333333333333334/1.0 [01:09<00:10, 61.12s/it]Stage 0 progress:  85%|████████▌ | 0.85/1.0 [01:10<00:09, 60.89s/it]              Stage 0 progress:  93%|█████████▎| 0.9333333333333333/1.0 [01:11<00:02, 30.67s/it]2026-05-12 15:27:51,851 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run completed
-Stage 0 progress: 100%|██████████| 1.0/1.0 [01:13<00:00, 30.41s/it]               Stage 0 progress: 100%|██████████| 1.0/1.0 [01:13<00:00, 73.07s/it]
-2026-05-12 15:27:52,852 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run started
-Stage 1 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 1 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 1 progress:   2%|▏         | 0.016666666666666666/1.0 [00:13<00:59, 60.07s/it]Stage 1 progress:   2%|▎         | 0.025/1.0 [00:14<01:22, 85.07s/it]               Stage 1 progress:   3%|▎         | 0.03333333333333333/1.0 [00:15<01:34, 98.22s/it]Stage 1 progress:   4%|▍         | 0.041666666666666664/1.0 [00:16<01:41, 105.81s/it]Stage 1 progress:   5%|▌         | 0.05/1.0 [00:17<01:45, 110.57s/it]                Stage 1 progress:   7%|▋         | 0.06666666666666667/1.0 [00:18<01:20, 85.99s/it]Stage 1 progress:   8%|▊         | 0.08333333333333333/1.0 [00:25<03:24, 223.21s/it]Stage 1 progress:   9%|▉         | 0.09166666666666666/1.0 [00:27<03:26, 227.06s/it]Stage 1 progress:  10%|█         | 0.1/1.0 [00:29<03:27, 230.26s/it]                Stage 1 progress:  13%|█▎        | 0.13333333333333333/1.0 [00:30<01:38, 113.56s/it]Stage 1 progress:  18%|█▊        | 0.175/1.0 [00:31<00:56, 67.90s/it]               Stage 1 progress:  18%|█▊        | 0.18333333333333332/1.0 [00:32<01:00, 74.54s/it]Stage 1 progress:  19%|█▉        | 0.19166666666666668/1.0 [00:33<01:05, 81.56s/it]Stage 1 progress:  21%|██        | 0.20833333333333334/1.0 [00:34<00:59, 75.00s/it]Stage 1 progress:  22%|██▏       | 0.21666666666666667/1.0 [00:36<01:21, 104.55s/it]Stage 1 progress:  23%|██▎       | 0.23333333333333334/1.0 [00:37<01:08, 89.49s/it] Stage 1 progress:  24%|██▍       | 0.24166666666666667/1.0 [00:40<01:47, 142.20s/it]Stage 1 progress:  25%|██▌       | 0.25/1.0 [00:42<02:02, 163.53s/it]               Stage 1 progress:  26%|██▌       | 0.25833333333333336/1.0 [00:43<01:53, 153.23s/it]Stage 1 progress:  28%|██▊       | 0.275/1.0 [00:45<01:41, 139.85s/it]              Stage 1 progress:  28%|██▊       | 0.2833333333333333/1.0 [00:47<01:56, 162.34s/it]Stage 1 progress:  29%|██▉       | 0.2916666666666667/1.0 [00:48<01:47, 152.10s/it]Stage 1 progress:  31%|███       | 0.30833333333333335/1.0 [00:49<01:19, 114.43s/it]Stage 1 progress:  32%|███▏      | 0.31666666666666665/1.0 [00:50<01:19, 115.71s/it]Stage 1 progress:  35%|███▌      | 0.35/1.0 [00:51<00:43, 67.41s/it]                Stage 1 progress:  37%|███▋      | 0.36666666666666664/1.0 [00:54<01:03, 99.79s/it]Stage 1 progress:  38%|███▊      | 0.375/1.0 [00:56<01:17, 123.69s/it]             Stage 1 progress:  39%|███▉      | 0.39166666666666666/1.0 [00:58<01:14, 122.53s/it]Stage 1 progress:  40%|████      | 0.4/1.0 [00:59<01:13, 122.08s/it]                Stage 1 progress:  42%|████▎     | 0.425/1.0 [01:00<00:49, 85.35s/it]Stage 1 progress:  43%|████▎     | 0.43333333333333335/1.0 [01:01<00:51, 91.45s/it]Stage 1 progress:  45%|████▌     | 0.45/1.0 [01:03<00:55, 101.03s/it]              Stage 1 progress:  48%|████▊     | 0.475/1.0 [01:04<00:39, 75.56s/it]Stage 1 progress:  52%|█████▏    | 0.5166666666666667/1.0 [01:05<00:24, 49.87s/it]Stage 1 progress:  53%|█████▎    | 0.5333333333333333/1.0 [01:07<00:30, 65.44s/it]Stage 1 progress:  55%|█████▌    | 0.55/1.0 [01:08<00:28, 64.15s/it]              Stage 1 progress:  61%|██████    | 0.6083333333333333/1.0 [01:09<00:15, 38.49s/it]Stage 1 progress:  64%|██████▍   | 0.6416666666666667/1.0 [01:10<00:12, 35.88s/it]Stage 1 progress:  66%|██████▌   | 0.6583333333333333/1.0 [01:11<00:13, 40.24s/it]Stage 1 progress:  68%|██████▊   | 0.6833333333333333/1.0 [01:12<00:12, 40.19s/it]Stage 1 progress:  70%|███████   | 0.7/1.0 [01:13<00:13, 44.36s/it]               Stage 1 progress:  73%|███████▎  | 0.7333333333333333/1.0 [01:14<00:10, 38.99s/it]Stage 1 progress:  75%|███████▌  | 0.75/1.0 [01:15<00:10, 43.43s/it]              Stage 1 progress:  78%|███████▊  | 0.775/1.0 [01:16<00:09, 42.37s/it]Stage 1 progress:  78%|███████▊  | 0.7833333333333333/1.0 [01:17<00:11, 52.42s/it]Stage 1 progress:  79%|███████▉  | 0.7916666666666666/1.0 [01:18<00:13, 62.96s/it]Stage 1 progress:  82%|████████▏ | 0.8166666666666667/1.0 [01:20<00:12, 69.83s/it]Stage 1 progress:  85%|████████▌ | 0.85/1.0 [01:21<00:07, 52.61s/it]              Stage 1 progress:  86%|████████▌ | 0.8583333333333333/1.0 [01:23<00:11, 77.71s/it]Stage 1 progress:  88%|████████▊ | 0.875/1.0 [01:24<00:09, 72.83s/it]             Stage 1 progress:  88%|████████▊ | 0.8833333333333333/1.0 [01:26<00:11, 100.46s/it]Stage 1 progress:  89%|████████▉ | 0.8916666666666667/1.0 [01:27<00:11, 104.21s/it]Stage 1 progress:  91%|█████████ | 0.9083333333333333/1.0 [01:28<00:08, 88.65s/it] Stage 1 progress:  97%|█████████▋| 0.9666666666666667/1.0 [01:29<00:01, 43.03s/it]2026-05-12 15:29:22,948 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run completed
-Stage 1 progress: 100%|██████████| 1.0/1.0 [01:30<00:00, 38.57s/it]               Stage 1 progress: 100%|██████████| 1.0/1.0 [01:30<00:00, 90.09s/it]
-2026-05-12 15:29:23,949 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run started
-Stage 2 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 2 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 2 progress:   1%|          | 0.011111111111111112/1.0 [00:19<01:29, 90.09s/it]Stage 2 progress:   2%|▏         | 0.016666666666666666/1.0 [00:21<03:19, 202.66s/it]Stage 2 progress:   2%|▏         | 0.022222222222222223/1.0 [00:24<05:21, 328.73s/it]Stage 2 progress:   3%|▎         | 0.03333333333333333/1.0 [00:25<03:18, 205.58s/it] Stage 2 progress:   6%|▌         | 0.05555555555555555/1.0 [00:26<01:43, 109.92s/it]Stage 2 progress:   7%|▋         | 0.06666666666666667/1.0 [00:28<02:02, 130.87s/it]Stage 2 progress:   8%|▊         | 0.08333333333333333/1.0 [00:29<01:34, 103.24s/it]Stage 2 progress:   9%|▉         | 0.08888888888888889/1.0 [00:30<01:45, 115.29s/it]Stage 2 progress:  10%|█         | 0.1/1.0 [00:31<01:36, 107.50s/it]                Stage 2 progress:  11%|█         | 0.10555555555555556/1.0 [00:32<01:47, 120.66s/it]Stage 2 progress:  12%|█▏        | 0.12222222222222222/1.0 [00:33<01:22, 94.17s/it] Stage 2 progress:  13%|█▎        | 0.13333333333333333/1.0 [00:34<01:20, 92.96s/it]Stage 2 progress:  15%|█▌        | 0.15/1.0 [00:35<01:08, 80.26s/it]               Stage 2 progress:  16%|█▌        | 0.16111111111111112/1.0 [00:36<01:09, 82.89s/it]Stage 2 progress:  17%|█▋        | 0.17222222222222222/1.0 [00:37<01:10, 84.89s/it]Stage 2 progress:  18%|█▊        | 0.17777777777777778/1.0 [00:40<02:11, 160.30s/it]Stage 2 progress:  20%|██        | 0.2/1.0 [00:43<01:58, 148.08s/it]                Stage 2 progress:  21%|██        | 0.2111111111111111/1.0 [00:44<01:45, 133.16s/it]Stage 2 progress:  22%|██▏       | 0.2222222222222222/1.0 [00:45<01:34, 121.57s/it]Stage 2 progress:  24%|██▍       | 0.2388888888888889/1.0 [00:46<01:15, 99.08s/it] Stage 2 progress:  26%|██▌       | 0.2611111111111111/1.0 [00:48<01:10, 95.40s/it]Stage 2 progress:  27%|██▋       | 0.2722222222222222/1.0 [00:49<01:08, 94.20s/it]Stage 2 progress:  28%|██▊       | 0.2777777777777778/1.0 [00:50<01:16, 106.17s/it]Stage 2 progress:  29%|██▉       | 0.28888888888888886/1.0 [00:51<01:12, 101.59s/it]Stage 2 progress:  30%|███       | 0.3/1.0 [00:52<01:08, 98.25s/it]                 Stage 2 progress:  33%|███▎      | 0.3277777777777778/1.0 [00:53<00:44, 66.63s/it]Stage 2 progress:  34%|███▍      | 0.34444444444444444/1.0 [00:54<00:42, 64.65s/it]Stage 2 progress:  35%|███▌      | 0.35/1.0 [00:56<01:06, 101.98s/it]              Stage 2 progress:  36%|███▌      | 0.3611111111111111/1.0 [00:58<01:18, 122.71s/it]Stage 2 progress:  38%|███▊      | 0.37777777777777777/1.0 [00:59<01:02, 100.01s/it]Stage 2 progress:  40%|████      | 0.4/1.0 [01:00<00:46, 77.59s/it]                 Stage 2 progress:  41%|████      | 0.40555555555555556/1.0 [01:02<01:07, 113.56s/it]Stage 2 progress:  42%|████▏     | 0.4222222222222222/1.0 [01:03<00:54, 94.68s/it]  Stage 2 progress:  43%|████▎     | 0.42777777777777776/1.0 [01:04<01:01, 106.98s/it]Stage 2 progress:  43%|████▎     | 0.43333333333333335/1.0 [01:05<01:07, 119.46s/it]Stage 2 progress:  46%|████▌     | 0.45555555555555555/1.0 [01:06<00:45, 82.73s/it] Stage 2 progress:  47%|████▋     | 0.4666666666666667/1.0 [01:07<00:45, 84.63s/it] Stage 2 progress:  47%|████▋     | 0.4722222222222222/1.0 [01:08<00:52, 99.63s/it]Stage 2 progress:  49%|████▉     | 0.4888888888888889/1.0 [01:09<00:42, 83.70s/it]Stage 2 progress:  50%|█████     | 0.5/1.0 [01:10<00:42, 85.45s/it]               Stage 2 progress:  52%|█████▏    | 0.5222222222222223/1.0 [01:11<00:32, 67.62s/it]Stage 2 progress:  53%|█████▎    | 0.5277777777777778/1.0 [01:12<00:39, 82.98s/it]Stage 2 progress:  54%|█████▍    | 0.5388888888888889/1.0 [01:14<00:50, 110.25s/it]Stage 2 progress:  56%|█████▌    | 0.5555555555555556/1.0 [01:15<00:40, 91.42s/it] Stage 2 progress:  57%|█████▋    | 0.5666666666666667/1.0 [01:16<00:39, 91.06s/it]Stage 2 progress:  62%|██████▏   | 0.6166666666666667/1.0 [01:17<00:17, 46.41s/it]Stage 2 progress:  63%|██████▎   | 0.6333333333333333/1.0 [01:18<00:18, 49.56s/it]Stage 2 progress:  68%|██████▊   | 0.6777777777777778/1.0 [01:19<00:11, 36.92s/it]Stage 2 progress:  69%|██████▉   | 0.6888888888888889/1.0 [01:20<00:13, 44.53s/it]Stage 2 progress:  69%|██████▉   | 0.6944444444444444/1.0 [01:21<00:17, 57.11s/it]Stage 2 progress:  71%|███████   | 0.7055555555555556/1.0 [01:24<00:29, 101.73s/it]Stage 2 progress:  72%|███████▏  | 0.7222222222222222/1.0 [01:26<00:29, 107.41s/it]Stage 2 progress:  73%|███████▎  | 0.7277777777777777/1.0 [01:29<00:44, 163.04s/it]Stage 2 progress:  75%|███████▌  | 0.75/1.0 [01:30<00:28, 113.07s/it]              Stage 2 progress:  76%|███████▌  | 0.7555555555555555/1.0 [01:31<00:29, 121.87s/it]Stage 2 progress:  78%|███████▊  | 0.7777777777777778/1.0 [01:32<00:19, 88.93s/it] Stage 2 progress:  79%|███████▉  | 0.7888888888888889/1.0 [01:33<00:18, 89.21s/it]Stage 2 progress:  80%|████████  | 0.8/1.0 [01:34<00:17, 89.46s/it]               Stage 2 progress:  81%|████████  | 0.8111111111111111/1.0 [01:35<00:16, 89.63s/it]Stage 2 progress:  82%|████████▏ | 0.8222222222222222/1.0 [01:36<00:15, 89.74s/it]Stage 2 progress:  83%|████████▎ | 0.8277777777777777/1.0 [01:37<00:18, 104.52s/it]Stage 2 progress:  84%|████████▍ | 0.8444444444444444/1.0 [01:38<00:13, 86.22s/it] Stage 2 progress:  86%|████████▌ | 0.8555555555555555/1.0 [01:39<00:12, 87.29s/it]Stage 2 progress:  87%|████████▋ | 0.8722222222222222/1.0 [01:40<00:09, 77.03s/it]Stage 2 progress:  89%|████████▉ | 0.8888888888888888/1.0 [01:41<00:07, 71.10s/it]Stage 2 progress:  90%|█████████ | 0.9/1.0 [01:43<00:09, 98.37s/it]               Stage 2 progress:  92%|█████████▏| 0.9166666666666666/1.0 [01:44<00:07, 85.00s/it]Stage 2 progress:  92%|█████████▏| 0.9222222222222223/1.0 [01:45<00:07, 98.57s/it]Stage 2 progress:  93%|█████████▎| 0.9277777777777778/1.0 [01:46<00:08, 112.34s/it]Stage 2 progress:  97%|█████████▋| 0.9722222222222222/1.0 [01:48<00:01, 67.99s/it] 2026-05-12 15:31:13,059 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run completed
-Stage 2 progress: 100%|██████████| 1.0/1.0 [01:49<00:00, 56.15s/it]               Stage 2 progress: 100%|██████████| 1.0/1.0 [01:49<00:00, 109.11s/it]
-2026-05-12 15:31:14,061 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run started
-Stage 3 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:19<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:20<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:21<?, ?it/s]Stage 3 progress:   0%|          | 0/1.0 [00:22<?, ?it/s]Stage 3 progress:   1%|▏         | 0.013333333333333334/1.0 [00:23<01:14, 75.07s/it]Stage 3 progress:   2%|▏         | 0.02/1.0 [00:26<03:46, 231.44s/it]               Stage 3 progress:   2%|▏         | 0.023333333333333334/1.0 [00:27<04:01, 247.23s/it]Stage 3 progress:   3%|▎         | 0.03/1.0 [00:30<05:17, 327.70s/it]                Stage 3 progress:   4%|▎         | 0.03666666666666667/1.0 [00:31<04:13, 263.56s/it]Stage 3 progress:   5%|▌         | 0.05/1.0 [00:32<02:39, 167.83s/it]               Stage 3 progress:   5%|▌         | 0.05333333333333334/1.0 [00:34<03:41, 234.26s/it]Stage 3 progress:   6%|▌         | 0.056666666666666664/1.0 [00:35<03:52, 246.13s/it]Stage 3 progress:   6%|▌         | 0.06/1.0 [00:37<04:59, 318.61s/it]                Stage 3 progress:   6%|▋         | 0.06333333333333334/1.0 [00:38<04:54, 314.42s/it]Stage 3 progress:   7%|▋         | 0.06666666666666667/1.0 [00:39<04:50, 310.92s/it]Stage 3 progress:   7%|▋         | 0.07333333333333333/1.0 [00:40<03:46, 244.84s/it]Stage 3 progress:   8%|▊         | 0.08/1.0 [00:41<03:13, 209.83s/it]               Stage 3 progress:   9%|▊         | 0.08666666666666667/1.0 [00:42<02:52, 189.17s/it]Stage 3 progress:  10%|▉         | 0.09666666666666666/1.0 [00:43<02:16, 151.25s/it]Stage 3 progress:  10%|█         | 0.10333333333333333/1.0 [00:44<02:15, 150.93s/it]Stage 3 progress:  12%|█▏        | 0.12/1.0 [00:45<01:32, 104.81s/it]               Stage 3 progress:  13%|█▎        | 0.13/1.0 [00:46<01:29, 103.40s/it]Stage 3 progress:  13%|█▎        | 0.13333333333333333/1.0 [00:47<01:51, 128.24s/it]Stage 3 progress:  14%|█▍        | 0.14/1.0 [00:48<01:55, 134.04s/it]               Stage 3 progress:  15%|█▌        | 0.15/1.0 [00:50<02:14, 158.05s/it]Stage 3 progress:  16%|█▌        | 0.15666666666666668/1.0 [00:51<02:11, 156.04s/it]Stage 3 progress:  16%|█▋        | 0.16333333333333333/1.0 [00:52<02:09, 154.48s/it]Stage 3 progress:  17%|█▋        | 0.17/1.0 [00:55<03:16, 236.42s/it]               Stage 3 progress:  18%|█▊        | 0.17666666666666667/1.0 [00:56<02:54, 211.96s/it]Stage 3 progress:  18%|█▊        | 0.18/1.0 [00:57<03:05, 226.83s/it]               Stage 3 progress:  19%|█▊        | 0.18666666666666668/1.0 [00:58<02:44, 201.90s/it]Stage 3 progress:  19%|█▉        | 0.19/1.0 [01:00<03:44, 276.96s/it]               Stage 3 progress:  20%|██        | 0.2/1.0 [01:02<03:14, 242.69s/it] Stage 3 progress:  22%|██▏       | 0.21666666666666667/1.0 [01:03<01:56, 148.58s/it]Stage 3 progress:  23%|██▎       | 0.23/1.0 [01:04<01:33, 121.33s/it]               Stage 3 progress:  24%|██▍       | 0.24/1.0 [01:05<01:27, 115.29s/it]Stage 3 progress:  25%|██▍       | 0.24666666666666667/1.0 [01:06<01:32, 122.73s/it]Stage 3 progress:  26%|██▌       | 0.25666666666666665/1.0 [01:07<01:25, 115.61s/it]Stage 3 progress:  27%|██▋       | 0.27/1.0 [01:08<01:13, 100.45s/it]               Stage 3 progress:  29%|██▊       | 0.2866666666666667/1.0 [01:09<01:00, 84.29s/it]Stage 3 progress:  30%|██▉       | 0.2966666666666667/1.0 [01:10<01:02, 88.32s/it]Stage 3 progress:  30%|███       | 0.30333333333333334/1.0 [01:11<01:09, 100.42s/it]Stage 3 progress:  32%|███▏      | 0.3233333333333333/1.0 [01:12<00:52, 77.44s/it]  Stage 3 progress:  35%|███▌      | 0.35333333333333333/1.0 [01:13<00:35, 55.66s/it]Stage 3 progress:  36%|███▌      | 0.36/1.0 [01:14<00:43, 68.47s/it]               Stage 3 progress:  39%|███▊      | 0.38666666666666666/1.0 [01:15<00:33, 54.95s/it]Stage 3 progress:  41%|████▏     | 0.41333333333333333/1.0 [01:16<00:28, 48.26s/it]Stage 3 progress:  44%|████▍     | 0.44/1.0 [01:17<00:24, 44.46s/it]               Stage 3 progress:  47%|████▋     | 0.47333333333333333/1.0 [01:18<00:20, 38.87s/it]Stage 3 progress:  50%|████▉     | 0.49666666666666665/1.0 [01:19<00:20, 39.99s/it]Stage 3 progress:  50%|█████     | 0.5033333333333333/1.0 [01:20<00:25, 51.26s/it] Stage 3 progress:  54%|█████▎    | 0.5366666666666666/1.0 [01:21<00:19, 42.29s/it]Stage 3 progress:  57%|█████▋    | 0.5666666666666667/1.0 [01:22<00:16, 39.14s/it]Stage 3 progress:  59%|█████▉    | 0.5933333333333334/1.0 [01:23<00:15, 38.64s/it]Stage 3 progress:  61%|██████    | 0.61/1.0 [01:24<00:16, 43.27s/it]              Stage 3 progress:  63%|██████▎   | 0.6333333333333333/1.0 [01:25<00:15, 43.16s/it]Stage 3 progress:  66%|██████▋   | 0.6633333333333333/1.0 [01:26<00:13, 39.66s/it]Stage 3 progress:  67%|██████▋   | 0.67/1.0 [01:27<00:16, 50.89s/it]              Stage 3 progress:  69%|██████▊   | 0.6866666666666666/1.0 [01:28<00:16, 53.33s/it]Stage 3 progress:  70%|██████▉   | 0.6966666666666667/1.0 [01:29<00:18, 62.03s/it]Stage 3 progress:  71%|███████   | 0.71/1.0 [01:30<00:18, 65.44s/it]              Stage 3 progress:  72%|███████▏  | 0.72/1.0 [01:31<00:20, 73.03s/it]Stage 3 progress:  73%|███████▎  | 0.7333333333333333/1.0 [01:32<00:19, 73.65s/it]Stage 3 progress:  75%|███████▌  | 0.75/1.0 [01:33<00:17, 68.95s/it]              Stage 3 progress:  77%|███████▋  | 0.7733333333333333/1.0 [01:34<00:13, 58.34s/it]Stage 3 progress:  78%|███████▊  | 0.7833333333333333/1.0 [01:35<00:14, 66.70s/it]Stage 3 progress:  79%|███████▉  | 0.79/1.0 [01:36<00:16, 80.03s/it]              Stage 3 progress:  81%|████████  | 0.81/1.0 [01:37<00:12, 67.83s/it]Stage 3 progress:  85%|████████▍ | 0.8466666666666667/1.0 [01:38<00:07, 46.93s/it]Stage 3 progress:  89%|████████▉ | 0.8933333333333333/1.0 [01:39<00:03, 34.60s/it]Stage 3 progress:  91%|█████████ | 0.9066666666666666/1.0 [01:40<00:03, 41.28s/it]Stage 3 progress:  93%|█████████▎| 0.93/1.0 [01:41<00:02, 41.75s/it]              Stage 3 progress:  97%|█████████▋| 0.9666666666666667/1.0 [01:42<00:01, 36.03s/it]2026-05-12 15:32:57,153 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run completed
-Stage 3 progress: 100%|██████████| 1.0/1.0 [01:43<00:00, 33.99s/it]               Stage 3 progress: 100%|██████████| 1.0/1.0 [01:43<00:00, 103.09s/it]
-2026-05-12 15:32:58,154 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run started
-Stage 4 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:19<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:20<?, ?it/s]Stage 4 progress:   0%|          | 0/1.0 [00:21<?, ?it/s]Stage 4 progress:   0%|          | 0.004761904761904762/1.0 [00:22<03:29, 210.34s/it]Stage 4 progress:   1%|          | 0.009523809523809525/1.0 [00:25<07:33, 457.66s/it]Stage 4 progress:   1%|▏         | 0.014285714285714285/1.0 [00:30<11:58, 728.55s/it]Stage 4 progress:   2%|▏         | 0.01904761904761905/1.0 [00:31<08:33, 523.89s/it] Stage 4 progress:   3%|▎         | 0.02619047619047619/1.0 [00:32<05:38, 348.10s/it]Stage 4 progress:   3%|▎         | 0.02857142857142857/1.0 [00:33<05:50, 361.05s/it]Stage 4 progress:   3%|▎         | 0.03333333333333333/1.0 [00:34<04:59, 309.94s/it]Stage 4 progress:   4%|▎         | 0.03571428571428571/1.0 [00:37<07:57, 495.16s/it]Stage 4 progress:   4%|▍         | 0.04047619047619048/1.0 [00:39<07:29, 468.40s/it]Stage 4 progress:   5%|▌         | 0.05/1.0 [00:40<04:30, 284.83s/it]               Stage 4 progress:   5%|▌         | 0.05238095238095238/1.0 [00:41<04:49, 305.56s/it]Stage 4 progress:   5%|▌         | 0.05476190476190476/1.0 [00:42<05:08, 326.11s/it]Stage 4 progress:   6%|▌         | 0.05952380952380952/1.0 [00:43<04:29, 286.86s/it]Stage 4 progress:   7%|▋         | 0.06666666666666667/1.0 [00:44<03:30, 225.14s/it]Stage 4 progress:   7%|▋         | 0.07142857142857142/1.0 [00:46<04:20, 280.98s/it]Stage 4 progress:   8%|▊         | 0.0761904761904762/1.0 [00:47<04:00, 260.46s/it] Stage 4 progress:   8%|▊         | 0.07857142857142857/1.0 [00:48<04:25, 287.87s/it]Stage 4 progress:   9%|▊         | 0.08571428571428572/1.0 [00:49<03:25, 225.23s/it]Stage 4 progress:   9%|▉         | 0.0880952380952381/1.0 [00:50<03:55, 258.08s/it] Stage 4 progress:  10%|█         | 0.1/1.0 [00:52<03:08, 209.10s/it]               Stage 4 progress:  11%|█         | 0.10714285714285714/1.0 [00:54<03:26, 231.80s/it]Stage 4 progress:  11%|█▏        | 0.11428571428571428/1.0 [00:55<02:59, 203.12s/it]Stage 4 progress:  12%|█▏        | 0.11666666666666667/1.0 [00:56<03:24, 231.28s/it]Stage 4 progress:  14%|█▎        | 0.1357142857142857/1.0 [00:57<01:47, 124.56s/it] Stage 4 progress:  14%|█▍        | 0.14285714285714285/1.0 [00:58<01:50, 128.35s/it]Stage 4 progress:  15%|█▌        | 0.1523809523809524/1.0 [00:59<01:42, 121.04s/it] Stage 4 progress:  16%|█▌        | 0.15714285714285714/1.0 [01:00<01:55, 137.43s/it]Stage 4 progress:  16%|█▌        | 0.1595238095238095/1.0 [01:01<02:23, 170.31s/it] Stage 4 progress:  16%|█▋        | 0.16428571428571428/1.0 [01:02<02:30, 180.25s/it]Stage 4 progress:  17%|█▋        | 0.16904761904761906/1.0 [01:03<02:36, 188.14s/it]Stage 4 progress:  17%|█▋        | 0.1738095238095238/1.0 [01:04<02:40, 194.14s/it] Stage 4 progress:  18%|█▊        | 0.18095238095238095/1.0 [01:05<02:22, 174.22s/it]Stage 4 progress:  19%|█▊        | 0.18571428571428572/1.0 [01:06<02:29, 183.57s/it]Stage 4 progress:  19%|█▉        | 0.19285714285714287/1.0 [01:07<02:15, 168.09s/it]Stage 4 progress:  20%|██        | 0.2/1.0 [01:08<02:06, 158.61s/it]                Stage 4 progress:  21%|██▏       | 0.21428571428571427/1.0 [01:09<01:30, 115.09s/it]Stage 4 progress:  22%|██▏       | 0.21666666666666667/1.0 [01:10<01:55, 147.12s/it]Stage 4 progress:  23%|██▎       | 0.22857142857142856/1.0 [01:11<01:32, 120.12s/it]Stage 4 progress:  23%|██▎       | 0.23095238095238096/1.0 [01:12<01:57, 152.85s/it]Stage 4 progress:  24%|██▍       | 0.23809523809523808/1.0 [01:13<01:53, 148.79s/it]Stage 4 progress:  25%|██▍       | 0.24523809523809523/1.0 [01:14<01:50, 146.05s/it]Stage 4 progress:  25%|██▌       | 0.25476190476190474/1.0 [01:15<01:37, 130.75s/it]Stage 4 progress:  26%|██▋       | 0.2642857142857143/1.0 [01:16<01:29, 121.85s/it] Stage 4 progress:  29%|██▊       | 0.2857142857142857/1.0 [01:17<00:58, 82.19s/it] Stage 4 progress:  29%|██▉       | 0.29285714285714287/1.0 [01:18<01:06, 93.81s/it]Stage 4 progress:  30%|███       | 0.3047619047619048/1.0 [01:19<01:03, 90.66s/it] Stage 4 progress:  31%|███▏      | 0.3142857142857143/1.0 [01:20<01:04, 94.55s/it]Stage 4 progress:  33%|███▎      | 0.33095238095238094/1.0 [01:21<00:53, 80.65s/it]Stage 4 progress:  35%|███▌      | 0.3547619047619048/1.0 [01:22<00:40, 63.22s/it] Stage 4 progress:  36%|███▋      | 0.36428571428571427/1.0 [01:23<00:45, 71.81s/it]Stage 4 progress:  38%|███▊      | 0.38333333333333336/1.0 [01:24<00:39, 64.72s/it]Stage 4 progress:  39%|███▉      | 0.3904761904761905/1.0 [01:25<00:47, 77.20s/it] Stage 4 progress:  40%|████      | 0.4/1.0 [01:26<00:50, 83.87s/it]               Stage 4 progress:  40%|████      | 0.40476190476190477/1.0 [01:27<01:00, 102.36s/it]Stage 4 progress:  41%|████▏     | 0.4142857142857143/1.0 [01:28<01:00, 103.16s/it] Stage 4 progress:  43%|████▎     | 0.4261904761904762/1.0 [01:29<00:55, 96.59s/it] Stage 4 progress:  46%|████▌     | 0.46190476190476193/1.0 [01:30<00:29, 55.71s/it]Stage 4 progress:  47%|████▋     | 0.4738095238095238/1.0 [01:31<00:32, 61.98s/it] Stage 4 progress:  49%|████▉     | 0.4928571428571429/1.0 [01:32<00:29, 58.81s/it]Stage 4 progress:  53%|█████▎    | 0.5285714285714286/1.0 [01:33<00:20, 44.24s/it]Stage 4 progress:  57%|█████▋    | 0.5714285714285714/1.0 [01:34<00:14, 34.88s/it]Stage 4 progress:  59%|█████▊    | 0.5857142857142857/1.0 [01:35<00:17, 41.07s/it]Stage 4 progress:  60%|██████    | 0.6047619047619047/1.0 [01:36<00:17, 43.94s/it]Stage 4 progress:  66%|██████▌   | 0.6571428571428571/1.0 [01:37<00:10, 31.61s/it]Stage 4 progress:  68%|██████▊   | 0.6761904761904762/1.0 [01:38<00:11, 35.90s/it]Stage 4 progress:  68%|██████▊   | 0.680952380952381/1.0 [01:40<00:19, 62.12s/it] Stage 4 progress:  69%|██████▊   | 0.6857142857142857/1.0 [01:41<00:23, 75.27s/it]Stage 4 progress:  69%|██████▉   | 0.6928571428571428/1.0 [01:42<00:26, 85.63s/it]Stage 4 progress:  71%|███████   | 0.7095238095238096/1.0 [01:43<00:22, 76.73s/it]Stage 4 progress:  71%|███████   | 0.7119047619047619/1.0 [01:44<00:28, 99.50s/it]Stage 4 progress:  72%|███████▏  | 0.719047619047619/1.0 [01:45<00:30, 108.49s/it]Stage 4 progress:  73%|███████▎  | 0.7261904761904762/1.0 [01:46<00:31, 116.08s/it]Stage 4 progress:  74%|███████▍  | 0.7428571428571429/1.0 [01:47<00:23, 91.18s/it] Stage 4 progress:  76%|███████▌  | 0.7619047619047619/1.0 [01:48<00:17, 74.92s/it]Stage 4 progress:  78%|███████▊  | 0.7761904761904762/1.0 [01:49<00:16, 73.41s/it]Stage 4 progress:  78%|███████▊  | 0.7785714285714286/1.0 [01:50<00:21, 97.30s/it]Stage 4 progress:  79%|███████▉  | 0.7904761904761904/1.0 [01:51<00:19, 92.96s/it]Stage 4 progress:  80%|████████  | 0.8023809523809524/1.0 [01:52<00:17, 90.11s/it]Stage 4 progress:  81%|████████  | 0.8119047619047619/1.0 [01:53<00:17, 94.13s/it]Stage 4 progress:  83%|████████▎ | 0.8333333333333334/1.0 [01:54<00:12, 72.19s/it]Stage 4 progress:  84%|████████▍ | 0.8404761904761905/1.0 [01:55<00:13, 84.48s/it]Stage 4 progress:  89%|████████▉ | 0.8904761904761904/1.0 [01:56<00:04, 42.99s/it]Stage 4 progress:  95%|█████████▌| 0.95/1.0 [01:57<00:01, 29.31s/it]              Stage 4 progress:  99%|█████████▉| 0.9880952380952381/1.0 [01:58<00:00, 28.33s/it]Stage 4 progress: 100%|██████████| 1.0/1.0 [01:59<00:00, 35.36s/it]               Stage 4 progress: 100%|██████████| 1.0/1.0 [01:59<00:00, 119.12s/it]
-2026-05-12 15:34:57,277 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run completed
-Stage 5 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-05-12 15:34:58,278 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run started
-Stage 5 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:19<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:20<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:21<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:22<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:23<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:24<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:25<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:26<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:27<?, ?it/s]Stage 5 progress:   0%|          | 0/1.0 [00:28<?, ?it/s]Stage 5 progress:   0%|          | 0.0033333333333333335/1.0 [00:29<04:59, 300.18s/it]Stage 5 progress:   0%|          | 0.005/1.0 [00:30<07:03, 425.30s/it]                Stage 5 progress:   1%|          | 0.006666666666666667/1.0 [00:31<08:07, 490.79s/it]Stage 5 progress:   1%|          | 0.01/1.0 [00:33<09:02, 547.48s/it]                Stage 5 progress:   1%|          | 0.011666666666666667/1.0 [00:38<19:54, 1208.85s/it]Stage 5 progress:   2%|▏         | 0.016666666666666666/1.0 [00:39<10:57, 668.45s/it] Stage 5 progress:   2%|▏         | 0.018333333333333333/1.0 [00:40<10:42, 654.63s/it]Stage 5 progress:   2%|▏         | 0.021666666666666667/1.0 [00:41<08:33, 524.41s/it]Stage 5 progress:   2%|▏         | 0.023333333333333334/1.0 [00:43<10:49, 665.13s/it]Stage 5 progress:   3%|▎         | 0.02666666666666667/1.0 [00:44<08:35, 529.21s/it] Stage 5 progress:   3%|▎         | 0.028333333333333332/1.0 [00:46<10:51, 670.49s/it]Stage 5 progress:   3%|▎         | 0.03166666666666667/1.0 [00:47<08:34, 531.60s/it] Stage 5 progress:   3%|▎         | 0.03333333333333333/1.0 [00:48<08:47, 546.16s/it]Stage 5 progress:   4%|▎         | 0.035/1.0 [00:50<11:13, 698.08s/it]              Stage 5 progress:   4%|▎         | 0.03666666666666667/1.0 [00:52<13:13, 823.25s/it]Stage 5 progress:   4%|▍         | 0.03833333333333333/1.0 [00:54<14:47, 922.38s/it]Stage 5 progress:   4%|▍         | 0.041666666666666664/1.0 [00:57<14:34, 913.00s/it]Stage 5 progress:   4%|▍         | 0.043333333333333335/1.0 [00:58<13:23, 839.81s/it]Stage 5 progress:   5%|▍         | 0.04666666666666667/1.0 [00:59<09:54, 623.49s/it] Stage 5 progress:   5%|▍         | 0.04833333333333333/1.0 [01:00<09:48, 618.45s/it]Stage 5 progress:   5%|▌         | 0.05/1.0 [01:01<09:43, 614.08s/it]               Stage 5 progress:   5%|▌         | 0.051666666666666666/1.0 [01:02<09:39, 610.63s/it]Stage 5 progress:   6%|▌         | 0.055/1.0 [01:03<07:33, 479.40s/it]               Stage 5 progress:   6%|▌         | 0.058333333333333334/1.0 [01:04<06:27, 411.92s/it]Stage 5 progress:   6%|▋         | 0.06333333333333334/1.0 [01:05<04:57, 317.35s/it] Stage 5 progress:   6%|▋         | 0.065/1.0 [01:07<07:21, 472.27s/it]              Stage 5 progress:   7%|▋         | 0.07/1.0 [01:08<05:30, 355.52s/it] Stage 5 progress:   7%|▋         | 0.07166666666666667/1.0 [01:09<06:08, 397.06s/it]Stage 5 progress:   8%|▊         | 0.07833333333333334/1.0 [01:11<05:22, 349.46s/it]Stage 5 progress:   8%|▊         | 0.085/1.0 [01:12<04:04, 267.15s/it]              Stage 5 progress:   9%|▉         | 0.08833333333333333/1.0 [01:13<04:10, 274.71s/it]Stage 5 progress:   9%|▉         | 0.09333333333333334/1.0 [01:14<03:46, 250.27s/it]Stage 5 progress:  10%|▉         | 0.095/1.0 [01:15<04:29, 297.63s/it]              Stage 5 progress:  10%|▉         | 0.09833333333333333/1.0 [01:16<04:28, 298.31s/it]Stage 5 progress:  10%|█         | 0.10333333333333333/1.0 [01:17<03:54, 261.60s/it]Stage 5 progress:  11%|█         | 0.10666666666666667/1.0 [01:18<04:02, 271.79s/it]Stage 5 progress:  11%|█         | 0.11/1.0 [01:19<04:08, 279.56s/it]               Stage 5 progress:  11%|█         | 0.11166666666666666/1.0 [01:20<04:54, 331.93s/it]Stage 5 progress:  12%|█▏        | 0.12166666666666667/1.0 [01:21<02:52, 196.86s/it]Stage 5 progress:  12%|█▎        | 0.125/1.0 [01:22<03:11, 219.31s/it]              Stage 5 progress:  13%|█▎        | 0.13333333333333333/1.0 [01:23<02:32, 175.95s/it]Stage 5 progress:  14%|█▍        | 0.14166666666666666/1.0 [01:24<02:12, 154.50s/it]Stage 5 progress:  16%|█▌        | 0.16/1.0 [01:26<01:48, 129.71s/it]               Stage 5 progress:  17%|█▋        | 0.16666666666666666/1.0 [01:27<01:51, 134.23s/it]Stage 5 progress:  18%|█▊        | 0.18333333333333332/1.0 [01:28<01:22, 101.48s/it]Stage 5 progress:  20%|█▉        | 0.19833333333333333/1.0 [01:29<01:11, 88.89s/it] Stage 5 progress:  20%|██        | 0.20166666666666666/1.0 [01:30<01:28, 110.67s/it]Stage 5 progress:  22%|██▏       | 0.22/1.0 [01:31<01:06, 85.58s/it]                Stage 5 progress:  23%|██▎       | 0.23166666666666666/1.0 [01:32<01:05, 85.63s/it]Stage 5 progress:  24%|██▍       | 0.24166666666666667/1.0 [01:33<01:07, 89.44s/it]Stage 5 progress:  25%|██▍       | 0.24666666666666667/1.0 [01:34<01:20, 106.88s/it]Stage 5 progress:  26%|██▋       | 0.2633333333333333/1.0 [01:35<01:03, 86.81s/it]  Stage 5 progress:  28%|██▊       | 0.2816666666666667/1.0 [01:36<00:53, 73.84s/it]Stage 5 progress:  29%|██▉       | 0.28833333333333333/1.0 [01:37<01:01, 87.04s/it]Stage 5 progress:  30%|██▉       | 0.2966666666666667/1.0 [01:38<01:06, 94.87s/it] Stage 5 progress:  32%|███▏      | 0.32166666666666666/1.0 [01:39<00:45, 67.30s/it]Stage 5 progress:  34%|███▍      | 0.3433333333333333/1.0 [01:40<00:38, 59.20s/it] Stage 5 progress:  35%|███▌      | 0.35333333333333333/1.0 [01:41<00:43, 67.48s/it]Stage 5 progress:  38%|███▊      | 0.37666666666666665/1.0 [01:42<00:35, 57.59s/it]Stage 5 progress:  41%|████      | 0.4083333333333333/1.0 [01:43<00:27, 46.21s/it] Stage 5 progress:  43%|████▎     | 0.43/1.0 [01:44<00:26, 46.21s/it]              Stage 5 progress:  45%|████▍     | 0.44666666666666666/1.0 [01:45<00:27, 49.63s/it]Stage 5 progress:  49%|████▉     | 0.49166666666666664/1.0 [01:46<00:18, 36.25s/it]Stage 5 progress:  53%|█████▎    | 0.5266666666666666/1.0 [01:47<00:15, 33.57s/it] Stage 5 progress:  55%|█████▍    | 0.5466666666666666/1.0 [01:48<00:16, 37.24s/it]Stage 5 progress:  59%|█████▊    | 0.5866666666666667/1.0 [01:49<00:13, 32.48s/it]Stage 5 progress:  64%|██████▍   | 0.6383333333333333/1.0 [01:50<00:09, 27.00s/it]Stage 5 progress:  65%|██████▌   | 0.6516666666666666/1.0 [01:51<00:11, 33.42s/it]Stage 5 progress:  66%|██████▋   | 0.665/1.0 [01:52<00:13, 40.09s/it]             Stage 5 progress:  67%|██████▋   | 0.6716666666666666/1.0 [01:53<00:16, 51.39s/it]Stage 5 progress:  68%|██████▊   | 0.6783333333333333/1.0 [01:54<00:20, 64.01s/it]Stage 5 progress:  69%|██████▉   | 0.6883333333333334/1.0 [01:55<00:22, 71.77s/it]Stage 5 progress:  70%|███████   | 0.7033333333333334/1.0 [01:56<00:20, 70.18s/it]Stage 5 progress:  71%|███████   | 0.71/1.0 [01:57<00:24, 83.53s/it]              Stage 5 progress:  72%|███████▎  | 0.725/1.0 [01:58<00:21, 77.66s/it]Stage 5 progress:  73%|███████▎  | 0.7316666666666667/1.0 [01:59<00:24, 90.83s/it]Stage 5 progress:  73%|███████▎  | 0.7333333333333333/1.0 [02:00<00:32, 121.85s/it]Stage 5 progress:  74%|███████▎  | 0.7366666666666667/1.0 [02:01<00:39, 148.35s/it]Stage 5 progress:  75%|███████▌  | 0.7533333333333333/1.0 [02:02<00:25, 102.96s/it]Stage 5 progress:  76%|███████▌  | 0.76/1.0 [02:03<00:27, 113.66s/it]              Stage 5 progress:  77%|███████▋  | 0.77/1.0 [02:04<00:25, 109.20s/it]Stage 5 progress:  79%|███████▉  | 0.7883333333333333/1.0 [02:05<00:17, 83.99s/it]Stage 5 progress:  80%|███████▉  | 0.795/1.0 [02:06<00:19, 96.79s/it]             Stage 5 progress:  81%|████████  | 0.81/1.0 [02:07<00:16, 85.27s/it] Stage 5 progress:  84%|████████▎ | 0.835/1.0 [02:08<00:10, 63.69s/it]Stage 5 progress:  84%|████████▍ | 0.8433333333333334/1.0 [02:09<00:11, 74.14s/it]Stage 5 progress:  90%|████████▉ | 0.8966666666666666/1.0 [02:10<00:04, 39.33s/it]Stage 5 progress:  90%|█████████ | 0.9033333333333333/1.0 [02:11<00:04, 50.51s/it]Stage 5 progress:  92%|█████████▏| 0.915/1.0 [02:12<00:04, 57.63s/it]             Stage 5 progress:  94%|█████████▍| 0.9383333333333334/1.0 [02:13<00:03, 52.24s/it]Stage 5 progress: 100%|██████████| 1.0/1.0 [02:14<00:00, 31.36s/it]               2026-05-12 15:37:12,412 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run completed
-Stage 5 progress: 100%|██████████| 1.0/1.0 [02:14<00:00, 134.13s/it]
-Stage 6 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-05-12 15:37:13,413 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run started
-Stage 6 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:19<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:20<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:21<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:22<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:23<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:24<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:25<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:26<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:27<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:28<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:29<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:30<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:31<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:32<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:33<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:34<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:35<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:36<?, ?it/s]Stage 6 progress:   0%|          | 0/1.0 [00:37<?, ?it/s]Stage 6 progress:   0%|          | 0.001388888888888889/1.0 [00:38<11:59, 720.84s/it]Stage 6 progress:   0%|          | 0.004166666666666667/1.0 [00:40<11:57, 720.86s/it]Stage 6 progress:   1%|          | 0.005555555555555556/1.0 [00:42<16:04, 970.19s/it]Stage 6 progress:   1%|          | 0.008333333333333333/1.0 [00:43<11:01, 666.99s/it]Stage 6 progress:   1%|          | 0.009722222222222222/1.0 [00:48<23:42, 1436.56s/it]Stage 6 progress:   1%|▏         | 0.0125/1.0 [00:49<16:03, 975.79s/it]               Stage 6 progress:   2%|▏         | 0.016666666666666666/1.0 [00:50<10:13, 623.89s/it]Stage 6 progress:   2%|▏         | 0.018055555555555554/1.0 [00:51<10:30, 641.88s/it]Stage 6 progress:   2%|▏         | 0.022222222222222223/1.0 [00:52<07:33, 463.97s/it]Stage 6 progress:   2%|▎         | 0.025/1.0 [00:57<13:59, 861.17s/it]               Stage 6 progress:   3%|▎         | 0.02638888888888889/1.0 [00:59<15:37, 962.73s/it]Stage 6 progress:   3%|▎         | 0.027777777777777776/1.0 [01:01<17:09, 1058.44s/it]Stage 6 progress:   3%|▎         | 0.029166666666666667/1.0 [01:03<18:30, 1143.60s/it]Stage 6 progress:   3%|▎         | 0.030555555555555555/1.0 [01:04<16:50, 1041.91s/it]Stage 6 progress:   3%|▎         | 0.034722222222222224/1.0 [01:05<10:12, 634.71s/it] Stage 6 progress:   4%|▍         | 0.043055555555555555/1.0 [01:07<06:23, 401.20s/it]Stage 6 progress:   4%|▍         | 0.044444444444444446/1.0 [01:08<07:01, 440.62s/it]Stage 6 progress:   5%|▌         | 0.05138888888888889/1.0 [01:09<04:46, 301.61s/it] Stage 6 progress:   5%|▌         | 0.05277777777777778/1.0 [01:10<05:32, 351.09s/it]Stage 6 progress:   5%|▌         | 0.05416666666666667/1.0 [01:11<06:22, 404.44s/it]Stage 6 progress:   6%|▌         | 0.058333333333333334/1.0 [01:12<05:21, 341.68s/it]Stage 6 progress:   6%|▋         | 0.06388888888888888/1.0 [01:13<04:16, 273.71s/it] Stage 6 progress:   7%|▋         | 0.06666666666666667/1.0 [01:14<04:34, 293.84s/it]Stage 6 progress:   7%|▋         | 0.07361111111111111/1.0 [01:15<03:29, 226.10s/it]Stage 6 progress:   8%|▊         | 0.075/1.0 [01:16<04:21, 282.66s/it]              Stage 6 progress:   8%|▊         | 0.08055555555555556/1.0 [01:17<03:42, 242.09s/it]Stage 6 progress:   9%|▉         | 0.0875/1.0 [01:18<03:03, 201.52s/it]             Stage 6 progress:   9%|▉         | 0.09444444444444444/1.0 [01:19<02:43, 180.21s/it]Stage 6 progress:  10%|█         | 0.1/1.0 [01:20<02:42, 180.19s/it]                Stage 6 progress:  11%|█         | 0.10833333333333334/1.0 [01:21<02:19, 156.78s/it]Stage 6 progress:  12%|█▏        | 0.11527777777777778/1.0 [01:22<02:15, 152.74s/it]Stage 6 progress:  12%|█▏        | 0.12083333333333333/1.0 [01:23<02:20, 160.09s/it]Stage 6 progress:  12%|█▏        | 0.12361111111111112/1.0 [01:24<02:48, 192.03s/it]Stage 6 progress:  13%|█▎        | 0.12638888888888888/1.0 [01:25<03:15, 223.26s/it]Stage 6 progress:  14%|█▎        | 0.1361111111111111/1.0 [01:26<02:22, 165.32s/it] Stage 6 progress:  14%|█▍        | 0.14444444444444443/1.0 [01:27<02:07, 148.53s/it]Stage 6 progress:  16%|█▌        | 0.15555555555555556/1.0 [01:28<01:44, 124.34s/it]Stage 6 progress:  16%|█▌        | 0.15833333333333333/1.0 [01:29<02:10, 154.74s/it]Stage 6 progress:  17%|█▋        | 0.16666666666666666/1.0 [01:30<01:58, 142.39s/it]Stage 6 progress:  18%|█▊        | 0.17777777777777778/1.0 [01:31<01:39, 121.24s/it]Stage 6 progress:  19%|█▉        | 0.1875/1.0 [01:32<01:33, 115.11s/it]             Stage 6 progress:  20%|██        | 0.20416666666666666/1.0 [01:33<01:11, 90.27s/it]Stage 6 progress:  21%|██▏       | 0.21388888888888888/1.0 [01:34<01:13, 93.74s/it]Stage 6 progress:  22%|██▏       | 0.22361111111111112/1.0 [01:35<01:14, 96.32s/it]Stage 6 progress:  23%|██▎       | 0.22916666666666666/1.0 [01:36<01:26, 111.96s/it]Stage 6 progress:  24%|██▍       | 0.24166666666666667/1.0 [01:37<01:15, 100.01s/it]Stage 6 progress:  25%|██▍       | 0.24861111111111112/1.0 [01:38<01:22, 110.13s/it]Stage 6 progress:  25%|██▌       | 0.25416666666666665/1.0 [01:39<01:32, 124.66s/it]Stage 6 progress:  27%|██▋       | 0.2708333333333333/1.0 [01:40<01:08, 94.24s/it]  Stage 6 progress:  29%|██▊       | 0.2861111111111111/1.0 [01:41<00:59, 83.28s/it]Stage 6 progress:  30%|███       | 0.3013888888888889/1.0 [01:42<00:53, 77.01s/it]Stage 6 progress:  31%|███       | 0.3111111111111111/1.0 [01:43<00:57, 83.30s/it]Stage 6 progress:  32%|███▏      | 0.32083333333333336/1.0 [01:44<01:00, 88.37s/it]Stage 6 progress:  33%|███▎      | 0.33194444444444443/1.0 [01:45<00:59, 88.90s/it]Stage 6 progress:  34%|███▍      | 0.34305555555555556/1.0 [01:46<00:58, 89.24s/it]Stage 6 progress:  35%|███▌      | 0.35138888888888886/1.0 [01:47<01:02, 96.69s/it]Stage 6 progress:  36%|███▋      | 0.3638888888888889/1.0 [01:48<00:57, 91.03s/it] Stage 6 progress:  38%|███▊      | 0.3819444444444444/1.0 [01:49<00:47, 76.34s/it]Stage 6 progress:  39%|███▉      | 0.39444444444444443/1.0 [01:50<00:46, 77.41s/it]Stage 6 progress:  42%|████▏     | 0.4166666666666667/1.0 [01:51<00:37, 63.67s/it] Stage 6 progress:  43%|████▎     | 0.43472222222222223/1.0 [01:52<00:34, 60.96s/it]Stage 6 progress:  45%|████▌     | 0.4513888888888889/1.0 [01:53<00:33, 60.69s/it] Stage 6 progress:  47%|████▋     | 0.46944444444444444/1.0 [01:54<00:31, 59.01s/it]Stage 6 progress:  48%|████▊     | 0.48055555555555557/1.0 [01:55<00:34, 65.82s/it]Stage 6 progress:  51%|█████     | 0.5111111111111111/1.0 [01:56<00:24, 50.53s/it] Stage 6 progress:  54%|█████▍    | 0.5375/1.0 [01:57<00:21, 45.95s/it]            Stage 6 progress:  58%|█████▊    | 0.5763888888888888/1.0 [01:58<00:15, 37.18s/it]Stage 6 progress:  63%|██████▎   | 0.6333333333333333/1.0 [01:59<00:10, 27.86s/it]Stage 6 progress:  64%|██████▍   | 0.6375/1.0 [02:00<00:13, 37.92s/it]            Stage 6 progress:  64%|██████▍   | 0.6430555555555556/1.0 [02:01<00:17, 49.68s/it]Stage 6 progress:  65%|██████▌   | 0.6513888888888889/1.0 [02:02<00:21, 60.29s/it]Stage 6 progress:  66%|██████▋   | 0.6625/1.0 [02:04<00:29, 87.00s/it]            Stage 6 progress:  67%|██████▋   | 0.6736111111111112/1.0 [02:05<00:28, 87.74s/it]Stage 6 progress:  69%|██████▉   | 0.6888888888888889/1.0 [02:06<00:25, 80.59s/it]Stage 6 progress:  70%|███████   | 0.7/1.0 [02:07<00:24, 82.97s/it]               Stage 6 progress:  71%|███████▏  | 0.7125/1.0 [02:08<00:23, 82.13s/it]Stage 6 progress:  72%|███████▏  | 0.7194444444444444/1.0 [02:09<00:26, 93.64s/it]Stage 6 progress:  73%|███████▎  | 0.7291666666666666/1.0 [02:10<00:26, 96.17s/it]Stage 6 progress:  74%|███████▍  | 0.7430555555555556/1.0 [02:11<00:22, 87.59s/it]Stage 6 progress:  75%|███████▍  | 0.7472222222222222/1.0 [02:12<00:27, 107.78s/it]Stage 6 progress:  76%|███████▌  | 0.7583333333333333/1.0 [02:13<00:24, 101.83s/it]Stage 6 progress:  77%|███████▋  | 0.7694444444444445/1.0 [02:14<00:22, 98.02s/it] Stage 6 progress:  79%|███████▉  | 0.7888888888888889/1.0 [02:15<00:16, 77.19s/it]Stage 6 progress:  80%|████████  | 0.8027777777777778/1.0 [02:16<00:14, 75.58s/it]Stage 6 progress:  82%|████████▏ | 0.8152777777777778/1.0 [02:17<00:14, 76.85s/it]Stage 6 progress:  85%|████████▍ | 0.8472222222222222/1.0 [02:18<00:08, 53.57s/it]Stage 6 progress:  87%|████████▋ | 0.8708333333333333/1.0 [02:19<00:06, 49.64s/it]Stage 6 progress:  89%|████████▉ | 0.8875/1.0 [02:20<00:05, 52.38s/it]            Stage 6 progress:  96%|█████████▋| 0.9625/1.0 [02:21<00:01, 27.91s/it]2026-05-12 15:39:35,562 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run completed
-Stage 6 progress: 100%|██████████| 1.0/1.0 [02:22<00:00, 27.54s/it]   Stage 6 progress: 100%|██████████| 1.0/1.0 [02:22<00:00, 142.14s/it]
-Stage 7 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-05-12 15:39:36,564 - inference_perf.loadgen.load_generator - INFO - Stage 7 - run started
-Stage 7 progress:   0%|          | 0/1.0 [00:01<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:02<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:03<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:04<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:05<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:06<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:07<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:08<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:09<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:10<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:11<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:12<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:13<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:14<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:15<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:16<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:17<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:18<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:19<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:20<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:21<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:22<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:23<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:24<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:25<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:26<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:27<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:28<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:29<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:30<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:31<?, ?it/s]Stage 7 progress:   0%|          | 0/1.0 [00:32<?, ?it/s]Stage 7 progress:   0%|          | 0.0022222222222222222/1.0 [00:33<07:29, 450.43s/it]Stage 7 progress:   0%|          | 0.0033333333333333335/1.0 [00:37<29:17, 1763.78s/it]Stage 7 progress:   0%|          | 0.0044444444444444444/1.0 [00:38<23:55, 1441.86s/it]Stage 7 progress:   1%|          | 0.006666666666666667/1.0 [00:48<50:01, 3021.79s/it] Stage 7 progress:   1%|          | 0.01/1.0 [00:56<44:29, 2696.57s/it]                Stage 7 progress:   1%|          | 0.012222222222222223/1.0 [01:02<44:25, 2698.73s/it]Stage 7 progress:   1%|▏         | 0.013333333333333334/1.0 [01:03<38:41, 2352.94s/it]Stage 7 progress:   1%|▏         | 0.014444444444444444/1.0 [01:05<36:41, 2234.23s/it]Stage 7 progress:   2%|▏         | 0.017777777777777778/1.0 [01:06<21:22, 1305.61s/it]Stage 7 progress:   2%|▏         | 0.02/1.0 [01:07<16:56, 1037.39s/it]                Stage 7 progress:   2%|▏         | 0.022222222222222223/1.0 [01:08<13:56, 855.71s/it]Stage 7 progress:   2%|▏         | 0.023333333333333334/1.0 [01:10<16:43, 1026.97s/it]Stage 7 progress:   3%|▎         | 0.025555555555555557/1.0 [01:11<13:29, 830.36s/it] Stage 7 progress:   3%|▎         | 0.027777777777777776/1.0 [01:12<11:26, 705.90s/it]Stage 7 progress:   3%|▎         | 0.028888888888888888/1.0 [01:14<14:47, 913.48s/it]Stage 7 progress:   3%|▎         | 0.03222222222222222/1.0 [01:15<10:18, 638.60s/it] Stage 7 progress:   3%|▎         | 0.034444444444444444/1.0 [01:16<09:22, 582.34s/it]Stage 7 progress:   4%|▎         | 0.035555555555555556/1.0 [01:17<10:15, 638.45s/it]Stage 7 progress:   4%|▍         | 0.03777777777777778/1.0 [01:18<09:13, 575.47s/it] Stage 7 progress:   4%|▍         | 0.03888888888888889/1.0 [01:19<10:13, 638.24s/it]Stage 7 progress:   4%|▍         | 0.04111111111111111/1.0 [01:20<09:07, 571.49s/it]Stage 7 progress:   5%|▍         | 0.04666666666666667/1.0 [01:22<07:12, 453.38s/it]Stage 7 progress:   5%|▌         | 0.05/1.0 [01:23<06:23, 403.78s/it]               Stage 7 progress:   5%|▌         | 0.05444444444444444/1.0 [01:24<05:17, 335.74s/it]Stage 7 progress:   6%|▌         | 0.058888888888888886/1.0 [01:25<04:39, 296.72s/it]Stage 7 progress:   6%|▌         | 0.06111111111111111/1.0 [01:27<06:32, 418.38s/it] Stage 7 progress:   6%|▋         | 0.06333333333333334/1.0 [01:28<06:38, 425.51s/it]Stage 7 progress:   7%|▋         | 0.06555555555555556/1.0 [01:29<06:43, 431.51s/it]Stage 7 progress:   7%|▋         | 0.06666666666666667/1.0 [01:30<07:47, 500.65s/it]Stage 7 progress:   7%|▋         | 0.06888888888888889/1.0 [01:31<07:32, 485.69s/it]Stage 7 progress:   8%|▊         | 0.07555555555555556/1.0 [01:32<04:35, 297.97s/it]Stage 7 progress:   8%|▊         | 0.07888888888888888/1.0 [01:33<04:35, 298.63s/it]Stage 7 progress:   9%|▊         | 0.08555555555555555/1.0 [01:34<03:32, 231.89s/it]Stage 7 progress:   9%|▉         | 0.08777777777777777/1.0 [01:35<04:06, 270.41s/it]Stage 7 progress:   9%|▉         | 0.09/1.0 [01:37<06:01, 397.14s/it]               Stage 7 progress:   9%|▉         | 0.09111111111111111/1.0 [01:38<06:58, 460.40s/it]Stage 7 progress:  10%|▉         | 0.09666666666666666/1.0 [01:39<04:56, 327.97s/it]Stage 7 progress:  10%|█         | 0.10111111111111111/1.0 [01:40<04:22, 291.93s/it]Stage 7 progress:  11%|█         | 0.10666666666666667/1.0 [01:41<03:42, 248.88s/it]Stage 7 progress:  11%|█         | 0.11/1.0 [01:42<03:52, 261.64s/it]               Stage 7 progress:  11%|█▏        | 0.11333333333333333/1.0 [01:43<04:00, 271.71s/it]Stage 7 progress:  12%|█▏        | 0.11888888888888889/1.0 [01:44<03:28, 236.55s/it]Stage 7 progress:  12%|█▏        | 0.12444444444444444/1.0 [01:45<03:09, 216.56s/it]Stage 7 progress:  13%|█▎        | 0.1322222222222222/1.0 [01:46<02:36, 180.12s/it] Stage 7 progress:  14%|█▍        | 0.14/1.0 [01:47<02:18, 160.98s/it]              Stage 7 progress:  15%|█▍        | 0.14888888888888888/1.0 [01:48<02:01, 142.73s/it]Stage 7 progress:  16%|█▌        | 0.15777777777777777/1.0 [01:49<01:51, 132.18s/it]Stage 7 progress:  17%|█▋        | 0.16666666666666666/1.0 [01:50<01:44, 125.66s/it]Stage 7 progress:  17%|█▋        | 0.1711111111111111/1.0 [01:51<02:00, 144.80s/it] Stage 7 progress:  18%|█▊        | 0.17777777777777778/1.0 [01:52<02:00, 146.34s/it]Stage 7 progress:  18%|█▊        | 0.1811111111111111/1.0 [01:53<02:21, 172.89s/it] Stage 7 progress:  19%|█▉        | 0.19444444444444445/1.0 [01:54<01:40, 124.30s/it]Stage 7 progress:  20%|██        | 0.20333333333333334/1.0 [01:55<01:36, 120.55s/it]Stage 7 progress:  21%|██▏       | 0.21333333333333335/1.0 [01:56<01:29, 113.59s/it]Stage 7 progress:  22%|██▏       | 0.21666666666666667/1.0 [01:57<01:49, 139.63s/it]Stage 7 progress:  22%|██▏       | 0.22333333333333333/1.0 [01:58<01:50, 142.62s/it]Stage 7 progress:  23%|██▎       | 0.23444444444444446/1.0 [01:59<01:32, 121.37s/it]Stage 7 progress:  25%|██▍       | 0.24666666666666667/1.0 [02:00<01:19, 106.08s/it]Stage 7 progress:  25%|██▌       | 0.2544444444444444/1.0 [02:01<01:23, 111.96s/it] Stage 7 progress:  27%|██▋       | 0.26555555555555554/1.0 [02:02<01:16, 104.36s/it]Stage 7 progress:  28%|██▊       | 0.2788888888888889/1.0 [02:03<01:07, 93.42s/it]  Stage 7 progress:  29%|██▉       | 0.2922222222222222/1.0 [02:04<01:01, 87.04s/it]Stage 7 progress:  30%|███       | 0.3022222222222222/1.0 [02:05<01:03, 90.57s/it]Stage 7 progress:  32%|███▏      | 0.31666666666666665/1.0 [02:06<00:56, 82.94s/it]Stage 7 progress:  32%|███▏      | 0.3244444444444444/1.0 [02:07<01:02, 92.84s/it] Stage 7 progress:  34%|███▍      | 0.34/1.0 [02:08<00:54, 81.95s/it]              Stage 7 progress:  35%|███▌      | 0.35/1.0 [02:09<00:56, 86.64s/it]Stage 7 progress:  38%|███▊      | 0.38/1.0 [02:10<00:36, 58.57s/it]Stage 7 progress:  40%|████      | 0.4/1.0 [02:11<00:33, 55.73s/it] Stage 7 progress:  41%|████▏     | 0.41333333333333333/1.0 [02:12<00:35, 60.39s/it]Stage 7 progress:  43%|████▎     | 0.4255555555555556/1.0 [02:13<00:37, 65.54s/it] Stage 7 progress:  45%|████▌     | 0.45/1.0 [02:14<00:30, 55.53s/it]              Stage 7 progress:  47%|████▋     | 0.4677777777777778/1.0 [02:15<00:29, 55.78s/it]Stage 7 progress:  54%|█████▍    | 0.5388888888888889/1.0 [02:16<00:13, 29.53s/it]Stage 7 progress:  60%|█████▉    | 0.5955555555555555/1.0 [02:17<00:09, 24.58s/it]Stage 7 progress:  60%|██████    | 0.6/1.0 [02:18<00:13, 33.53s/it]               Stage 7 progress:  60%|██████    | 0.6044444444444445/1.0 [02:19<00:17, 45.03s/it]Stage 7 progress:  61%|██████    | 0.6066666666666667/1.0 [02:20<00:24, 61.68s/it]Stage 7 progress:  61%|██████    | 0.6122222222222222/1.0 [02:21<00:29, 76.85s/it]Stage 7 progress:  62%|██████▏   | 0.6177777777777778/1.0 [02:22<00:35, 92.83s/it]Stage 7 progress:  62%|██████▏   | 0.6244444444444445/1.0 [02:23<00:39, 104.83s/it]Stage 7 progress:  63%|██████▎   | 0.6288888888888889/1.0 [02:24<00:46, 124.84s/it]Stage 7 progress:  64%|██████▍   | 0.6388888888888888/1.0 [02:25<00:41, 116.23s/it]Stage 7 progress:  64%|██████▍   | 0.6433333333333333/1.0 [02:26<00:48, 135.95s/it]Stage 7 progress:  65%|██████▍   | 0.6488888888888888/1.0 [02:27<00:51, 146.81s/it]Stage 7 progress:  66%|██████▌   | 0.6566666666666666/1.0 [02:28<00:48, 140.85s/it]Stage 7 progress:  66%|██████▌   | 0.6588888888888889/1.0 [02:29<01:00, 177.42s/it]Stage 7 progress:  67%|██████▋   | 0.6688888888888889/1.0 [02:30<00:47, 144.02s/it]Stage 7 progress:  67%|██████▋   | 0.6722222222222223/1.0 [02:31<00:55, 170.68s/it]Stage 7 progress:  68%|██████▊   | 0.68/1.0 [02:32<00:49, 155.43s/it]              Stage 7 progress:  69%|██████▉   | 0.6922222222222222/1.0 [02:33<00:37, 122.44s/it]Stage 7 progress:  70%|██████▉   | 0.6966666666666667/1.0 [02:34<00:43, 141.86s/it]Stage 7 progress:  71%|███████   | 0.7111111111111111/1.0 [02:35<00:31, 107.93s/it]Stage 7 progress:  72%|███████▏  | 0.7233333333333334/1.0 [02:36<00:27, 98.54s/it] Stage 7 progress:  73%|███████▎  | 0.7311111111111112/1.0 [02:37<00:28, 105.98s/it]Stage 7 progress:  75%|███████▌  | 0.75/1.0 [02:38<00:20, 81.52s/it]               Stage 7 progress:  77%|███████▋  | 0.7666666666666667/1.0 [02:39<00:17, 73.62s/it]Stage 7 progress:  78%|███████▊  | 0.78/1.0 [02:40<00:16, 74.05s/it]              Stage 7 progress:  79%|███████▉  | 0.7888888888888889/1.0 [02:41<00:17, 82.54s/it]Stage 7 progress:  80%|████████  | 0.8033333333333333/1.0 [02:42<00:15, 78.06s/it]Stage 7 progress:  82%|████████▏ | 0.8177777777777778/1.0 [02:43<00:13, 75.20s/it]Stage 7 progress:  82%|████████▏ | 0.8244444444444444/1.0 [02:44<00:15, 88.44s/it]Stage 7 progress:  84%|████████▍ | 0.84/1.0 [02:45<00:12, 79.52s/it]              Stage 7 progress:  86%|████████▌ | 0.8588888888888889/1.0 [02:46<00:09, 69.12s/it]Stage 7 progress:  89%|████████▉ | 0.8944444444444445/1.0 [02:47<00:05, 48.11s/it]Stage 7 progress: 100%|██████████| 1.0/1.0 [02:48<00:00, 21.65s/it]               Stage 7 progress: 100%|██████████| 1.0/1.0 [02:48<00:00, 168.16s/it]
-2026-05-12 15:42:24,724 - inference_perf.loadgen.load_generator - INFO - Stage 7 - run completed
-2026-05-12 15:42:25,823 - inference_perf.reportgen.base - INFO - Generating Reports...
-2026-05-12 15:42:41,102 - inference_perf.reportgen.base - WARNING - Prometheus Metrics Client is not configured or not of type PrometheusMetricsClient
-2026-05-12 15:42:41,105 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/summary_lifecycle_metrics.json
-2026-05-12 15:42:41,105 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_0_lifecycle_metrics.json
-2026-05-12 15:42:41,105 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_1_lifecycle_metrics.json
-2026-05-12 15:42:41,106 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_2_lifecycle_metrics.json
-2026-05-12 15:42:41,106 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_3_lifecycle_metrics.json
-2026-05-12 15:42:41,106 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_4_lifecycle_metrics.json
-2026-05-12 15:42:41,106 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_5_lifecycle_metrics.json
-2026-05-12 15:42:41,107 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_6_lifecycle_metrics.json
-2026-05-12 15:42:41,107 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/stage_7_lifecycle_metrics.json
-2026-05-12 15:42:48,693 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/per_request_lifecycle_metrics.json
-2026-05-12 15:42:48,698 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1778599518_shared_prefix_synthetic_baseline-sarvam/config.yaml
-Harness completed successfully.
-Harness completed: /usr/local/bin/inference-perf-llm-d-benchmark.sh
-Running analysis: /usr/local/bin/inference-perf-analyze_results.sh
-Converting stage_0_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_0_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_1_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_1_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_2_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_2_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_3_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_3_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_4_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_4_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_5_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_5_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_6_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_6_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Converting stage_7_lifecycle_metrics.json to Benchmark Report v0.1
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.
-Converting stage_7_lifecycle_metrics.json to Benchmark Report v0.2
-Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
-Empty context dictionary provided
-Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
-Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method
-Results data conversion completed successfully.
