@@ -37,11 +37,3 @@ Prefill-heavy `shared_prefix_synthetic` from
 shared system prompt + short question + decode-tolerant output. This matches
 production RAG, chat, and citizen-services traffic profiles where prefix-cache
 routing has the most room to win.
-
-## Blogs
-
-- [`blog-llmd-revised.md`](blog-llmd-revised.md) — short llm-d blog, the most current draft
-- [`blog-llmd-technical.md`](blog-llmd-technical.md) — long technical write-up
-- [`blog-ibm-research.md`](blog-ibm-research.md) — IBM Research / business-facing version
-
-Compiled `.docx` versions of each are checked in alongside.
